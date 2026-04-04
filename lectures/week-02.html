@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 02 · 물, 너는 누구니? | 가우스 반</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Noto+Serif+KR:wght@400;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #2c2c2c;
+  --ink-light: #555;
+  --ink-faint: #888;
+  --paper: #faf9f7;
+  --card: #ffffff;
+  --blue: #0077b6;
+  --blue-deep: #023e8a;
+  --blue-soft: #e0f2fe;
+  --blue-glow: #caf0f8;
+  --teal: #00b4d8;
+  --coral: #e76f51;
+  --coral-soft: #fde8e0;
+  --gold: #e9c46a;
+  --gold-soft: #fdf6e3;
+  --sage: #2d6a4f;
+  --sage-soft: #d8f3dc;
+  --violet: #7209b7;
+  --violet-soft: #f3e8ff;
+  --border: #e8e4de;
+  --shadow: 0 2px 24px rgba(0,0,0,0.05);
+  --shadow-lg: 0 8px 40px rgba(0,0,0,0.08);
+  --radius: 16px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+.hero {
+  position: relative;
+  min-height: 55vh;
+  display: flex;
+  align-items: flex-end;
+  padding: 3rem 2rem 2.5rem;
+  overflow: hidden;
+  background: linear-gradient(160deg, #023e8a 0%, #0077b6 40%, #00b4d8 70%, #48cae4 100%);
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 80%, rgba(202,240,248,0.25) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 50% at 80% 20%, rgba(0,180,216,0.2) 0%, transparent 70%);
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 80px;
+  background: linear-gradient(to top, var(--paper) 0%, transparent 100%);
+}
+.hero-content {
+  max-width: 720px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+  color: #fff;
+  width: 100%;
+}
+.hero-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.6;
+  margin-bottom: 1rem;
+}
+.hero h1 {
+  font-family: 'Noto Serif KR', serif;
+  font-size: clamp(2rem, 6vw, 3rem);
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 0.8rem;
+}
+.hero-desc {
+  font-size: 1rem;
+  opacity: 0.8;
+  font-weight: 300;
+  line-height: 1.7;
+  max-width: 500px;
+}
+.hero-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1.2rem;
+}
+.hero-chip {
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 100px;
+  padding: 0.3rem 0.9rem;
+  font-size: 0.75rem;
+}
+
+.content {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2rem 2rem 4rem;
+}
+
+.reading-info {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 1rem 0 2rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2.5rem;
+  font-size: 0.82rem;
+  color: var(--ink-faint);
+}
+.reading-dot {
+  width: 6px; height: 6px;
+  background: var(--blue);
+  border-radius: 50%;
+}
+
+.story {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 1.08rem;
+  line-height: 2;
+  color: var(--ink);
+  margin-bottom: 2rem;
+}
+.story.first-para::first-letter {
+  font-size: 3.2em;
+  float: left;
+  line-height: 0.85;
+  margin: 0.05em 0.12em 0 0;
+  color: var(--blue-deep);
+  font-weight: 700;
+}
+.body-text {
+  font-size: 1rem;
+  line-height: 2;
+  color: var(--ink);
+  margin-bottom: 1.5rem;
+}
+.body-text strong { color: var(--blue-deep); font-weight: 700; }
+
+.section-header {
+  margin: 3rem 0 1.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+}
+.section-number {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 0.4rem;
+}
+.section-title {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.4;
+}
+
+.concept {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.8rem;
+  margin: 1.8rem 0;
+  box-shadow: var(--shadow);
+  position: relative;
+}
+.concept::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 24px;
+  width: 40px; height: 3px;
+  background: var(--blue);
+  border-radius: 0 0 2px 2px;
+}
+.concept-badge {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--blue);
+  background: var(--blue-soft);
+  padding: 0.2rem 0.7rem;
+  border-radius: 100px;
+  margin-bottom: 0.8rem;
+}
+.concept h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 0.7rem;
+  color: var(--blue-deep);
+}
+.concept p {
+  font-size: 0.95rem;
+  line-height: 1.9;
+  color: var(--ink-light);
+}
+
+.pause {
+  background: var(--gold-soft);
+  border-left: 4px solid var(--gold);
+  border-radius: 0 12px 12px 0;
+  padding: 1.3rem 1.5rem;
+  margin: 2rem 0;
+  font-size: 0.95rem;
+  line-height: 1.85;
+}
+.pause-label {
+  font-weight: 700;
+  color: #b07d10;
+  margin-bottom: 0.3rem;
+  font-size: 0.88rem;
+}
+
+.analogy {
+  background: var(--violet-soft);
+  border-left: 4px solid var(--violet);
+  border-radius: 0 12px 12px 0;
+  padding: 1.3rem 1.5rem;
+  margin: 1.8rem 0;
+  font-size: 0.95rem;
+  line-height: 1.85;
+}
+.analogy-label {
+  font-weight: 700;
+  color: var(--violet);
+  margin-bottom: 0.3rem;
+  font-size: 0.88rem;
+}
+
+.keypoint {
+  background: var(--blue-glow);
+  border: 1px solid #b2ebf2;
+  border-radius: var(--radius);
+  padding: 1.3rem 1.5rem;
+  margin: 1.8rem 0;
+  font-size: 0.95rem;
+  line-height: 1.85;
+}
+.keypoint-label {
+  font-weight: 700;
+  color: var(--blue-deep);
+  margin-bottom: 0.3rem;
+  font-size: 0.88rem;
+}
+
+.compare-wrap {
+  margin: 1.8rem 0;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+.compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+.compare-table th {
+  background: var(--blue-deep);
+  color: #fff;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-weight: 500;
+  font-size: 0.82rem;
+}
+.compare-table td {
+  padding: 0.7rem 1rem;
+  border-bottom: 1px solid #f0ede8;
+  color: var(--ink-light);
+  line-height: 1.6;
+}
+.compare-table tr:last-child td { border-bottom: none; }
+.compare-table tr:nth-child(even) td { background: #fafaf8; }
+.compare-table .hl { background: var(--blue-soft) !important; color: var(--blue-deep); font-weight: 600; }
+
+.funfact {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  margin: 1.8rem 0;
+  box-shadow: var(--shadow);
+}
+.funfact-icon {
+  width: 44px; height: 44px;
+  background: var(--coral-soft);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+.funfact-body { flex: 1; }
+.funfact-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--coral);
+  margin-bottom: 0.3rem;
+}
+.funfact-text {
+  font-size: 0.9rem;
+  line-height: 1.8;
+  color: var(--ink-light);
+}
+
+.num-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.8rem;
+  margin: 1.5rem 0;
+}
+.num-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.2rem;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+.num-big {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--blue-deep);
+  line-height: 1.2;
+}
+.num-label {
+  font-size: 0.75rem;
+  color: var(--ink-faint);
+  margin-top: 0.3rem;
+  line-height: 1.4;
+}
+
+.quiz-section {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2rem;
+  margin: 2rem 0;
+  box-shadow: var(--shadow);
+}
+.quiz-section-title {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+}
+.quiz-section-sub {
+  font-size: 0.85rem;
+  color: var(--ink-faint);
+  margin-bottom: 1.5rem;
+}
+.quiz-block { margin-bottom: 1.8rem; }
+.quiz-block:last-child { margin-bottom: 0; }
+.quiz-q {
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin-bottom: 0.8rem;
+  padding-left: 2.2rem;
+  position: relative;
+  line-height: 1.6;
+}
+.quiz-q::before {
+  content: attr(data-num);
+  position: absolute;
+  left: 0; top: 0;
+  width: 1.6rem; height: 1.6rem;
+  background: var(--blue);
+  color: #fff;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+.quiz-opts { display: flex; flex-direction: column; gap: 0.45rem; padding-left: 2.2rem; }
+.quiz-opt {
+  background: var(--paper);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 0.65rem 1rem;
+  cursor: pointer;
+  font-size: 0.88rem;
+  transition: all 0.25s;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  line-height: 1.5;
+}
+.quiz-opt:hover { border-color: var(--blue); background: var(--blue-soft); }
+.quiz-opt .marker {
+  width: 20px; height: 20px;
+  border: 2px solid var(--border);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.62rem; font-weight: 700;
+  flex-shrink: 0;
+  transition: all 0.25s;
+  font-family: 'JetBrains Mono', monospace;
+}
+.quiz-opt.correct { border-color: var(--sage); background: var(--sage-soft); }
+.quiz-opt.correct .marker { background: var(--sage); color: #fff; border-color: var(--sage); }
+.quiz-opt.wrong { border-color: var(--coral); background: var(--coral-soft); }
+.quiz-opt.wrong .marker { background: var(--coral); color: #fff; border-color: var(--coral); }
+.quiz-explain {
+  margin-top: 0.6rem;
+  margin-left: 2.2rem;
+  padding: 0.8rem 1rem;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  line-height: 1.7;
+  display: none;
+}
+.quiz-explain.show { display: block; }
+.quiz-explain.ok { background: var(--sage-soft); color: #1b4332; }
+.quiz-explain.no { background: var(--coral-soft); color: #7c2d12; }
+
+.page-footer {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--ink-faint);
+  border-top: 1px solid var(--border);
+}
+.page-footer a { color: var(--blue); text-decoration: none; }
+
+.scroll-progress {
+  position: fixed;
+  top: 0; left: 0;
+  width: 0%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--blue-deep), var(--teal));
+  z-index: 100;
+  transition: width 0.1s;
+}
+
+@media (max-width: 600px) {
+  .hero { min-height: 45vh; padding: 2rem 1.2rem 2rem; }
+  .content { padding: 1.5rem 1.2rem 3rem; }
+  .story { font-size: 1rem; }
+  .section-title { font-size: 1.25rem; }
+  .num-grid { grid-template-columns: repeat(2, 1fr); }
+  .concept, .quiz-section { padding: 1.4rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<header class="hero">
+  <div class="hero-content">
+    <div class="hero-meta">Week 02 · 2026.04.11 · 가우스 반</div>
+    <h1>물, 너는 누구니?</h1>
+    <p class="hero-desc">매일 마시고, 씻고, 놀면서도 한 번도 의심하지 않았던 물. 하지만 물은 이 우주에서 가장 이상한 물질이다.</p>
+    <div class="hero-chips">
+      <span class="hero-chip">사전학습 교재</span>
+      <span class="hero-chip">약 20분</span>
+      <span class="hero-chip">수·과학 융합</span>
+    </div>
+  </div>
+</header>
+
+<article class="content">
+
+  <div class="reading-info">
+    <span class="reading-dot"></span>
+    <span>읽는 시간 약 20분</span>
+    <span>·</span>
+    <span>스크롤하며 읽어주세요</span>
+  </div>
+
+  <!-- ━━━ INTRO ━━━ -->
+
+  <p class="story first-para">
+    상상해보자. 너는 지금 우주 탐사 대원이다. 임무는 생명체가 살 수 있는 행성을 찾는 것. 수백 개의 행성을 조사했지만, 과학자들이 가장 먼저 확인하는 것은 딱 하나다. "거기에 <strong>물</strong>이 있는가?"
+  </p>
+
+  <p class="body-text">
+    왜 하필 물일까? 금도 아니고, 다이아몬드도 아니고, 왜 그냥 물? 답은 놀랍다. 물은 "그냥 물"이 아니기 때문이다. 물은 다른 어떤 물질도 하지 못하는 일을 해내는, 이 우주에서 가장 특이하고 이상한 물질이다. 오늘 우리는 매일 보면서도 전혀 몰랐던 물의 비밀을 파헤칠 것이다.
+  </p>
+
+  <div class="funfact">
+    <div class="funfact-icon">🛰️</div>
+    <div class="funfact-body">
+      <div class="funfact-title">진짜 이야기</div>
+      <div class="funfact-text">미국 NASA는 외계 생명 탐사 전략을 딱 두 단어로 요약한다: <strong>"Follow the water."</strong> (물을 따라가라.) 실제로 화성 탐사 로버가 가장 먼저 하는 일도 물의 흔적을 찾는 것이다.</div>
+    </div>
+  </div>
+
+  <!-- ━━━ CHAPTER 1 ━━━ -->
+
+  <div class="section-header">
+    <div class="section-number">Chapter 01</div>
+    <h2 class="section-title">물 한 방울 속에 숨은 자석들</h2>
+  </div>
+
+  <p class="body-text">
+    물 한 방울을 1억 배로 확대한다고 생각해보자. 그러면 아주 작은 알갱이들이 보인다. 그것이 바로 <strong>물 분자</strong>다. 물 분자 하나는 산소(O) 원자 1개에 수소(H) 원자 2개가 붙어 있는 형태로, 화학식으로는 <strong>H₂O</strong>라고 쓴다.
+  </p>
+
+  <p class="body-text">
+    그런데 여기서 중요한 게 있다. 수소 두 개가 산소에 일직선으로 붙어 있는 게 아니다. 약 <strong>104.5도</strong> 각도로 꺾여 있다. 마치 미키마우스 얼굴처럼 — 동그란 산소가 얼굴이고, 수소 두 개가 귀처럼 양쪽으로 삐져나온 모양이다.
+  </p>
+
+  <div class="pause">
+    <div class="pause-label">🤚 잠깐, 여기서 생각!</div>
+    "고작 모양이 꺾여 있는 게 뭐 대수야?" 하고 생각할 수 있다. 하지만 이 작은 꺾임이 물의 모든 비밀을 만들어낸다. 만약 일직선이었다면, 물은 지금과 완전히 다른 물질이 되었을 것이고, 아마 지구에 생명은 존재하지 않았을 것이다.
+  </div>
+
+  <div class="concept">
+    <span class="concept-badge">핵심 개념</span>
+    <h3>극성 — 물 분자는 미니 자석이다</h3>
+    <p>
+      물 분자가 꺾여 있기 때문에, 산소 쪽은 전기적으로 살짝 <strong>마이너스(-)</strong>를 띠고, 수소 쪽은 살짝 <strong>플러스(+)</strong>를 띤다. 이렇게 한쪽이 (+), 다른 쪽이 (-)인 성질을 <strong>극성</strong>이라고 한다. 물 분자 하나하나가 아주 작은 자석인 셈이다.
+    </p>
+  </div>
+
+  <p class="body-text">
+    자석의 N극과 S극이 서로 끌어당기는 것처럼, 물 분자의 (+) 부분과 이웃 분자의 (-) 부분도 서로 끌어당긴다. 이 끌어당기는 힘을 <strong>수소결합(Hydrogen Bond)</strong>이라고 부른다.
+  </p>
+
+  <div class="analogy">
+    <div class="analogy-label">🎯 쉽게 비유하면</div>
+    교실에서 30명이 손을 잡고 있다고 생각해보자. 한 명 한 명의 악력은 약하지만, 30명이 동시에 잡고 있으면 쉽게 떨어지지 않는다. 수소결합도 마찬가지다. 하나하나는 약하지만, 수없이 많은 물 분자가 동시에 수소결합을 하면 엄청난 힘이 된다.
+  </div>
+
+  <p class="body-text">
+    바로 이 수소결합 때문에 물은 다른 물질이 절대 하지 못하는 <strong>4가지 특별한 일</strong>을 한다. 하나씩 살펴보자.
+  </p>
+
+  <!-- ━━━ CHAPTER 2 ━━━ -->
+
+  <div class="section-header">
+    <div class="section-number">Chapter 02</div>
+    <h2 class="section-title">특이한 성질 ① — 얼음은 왜 물에 뜰까?</h2>
+  </div>
+
+  <p class="body-text">
+    컵에 주스를 따르고 얼음을 넣으면 어떻게 되는가? 당연히 <strong>뜬다</strong>. 너무 당연해서 생각해본 적도 없을 것이다. 하지만 이것은 전혀 당연하지 않다.
+  </p>
+
+  <p class="body-text">
+    세상의 거의 모든 물질은 고체가 되면 더 무거워진다. 쇠를 녹이면 액체 쇠 위에 고체 쇠가 가라앉는다. 초를 녹이면 액체 초 위에 고체 초가 가라앉는다. 고체가 액체보다 무거운 것이 "정상"이다.
+  </p>
+
+  <p class="body-text">
+    그런데 <strong>물은 정반대다</strong>. 물이 얼면 부피가 약 <strong>9%</strong> 늘어나면서 가벼워진다. 왜일까? 물이 얼면 수소결합이 규칙적인 육각형 구조를 만드는데, 이 구조 안에 빈 공간이 생기기 때문이다. 마치 벽돌을 대충 쌓으면 빈틈 없이 꽉 차지만, 규칙적인 벌집 모양으로 쌓으면 구멍이 생기는 것과 같다. 이 빈 공간 때문에 부피가 늘어나고, 부피가 늘어나니 같은 무게라도 가벼워지는 것이다. 가벼우니까 뜬다. 이것을 과학자들은 <strong>"밀도 역전"</strong>이라고 부른다.
+  </p>
+
+  <div class="pause">
+    <div class="pause-label">🤚 잠깐, 여기서 생각!</div>
+    만약 얼음이 물보다 무거웠다면, 겨울에 호수가 어떻게 될까? 30초만 상상해보자.
+  </div>
+
+  <p class="body-text">
+    만약 얼음이 가라앉았다면, 겨울마다 호수의 <strong>바닥부터</strong> 얼어붙었을 것이다. 바닥의 얼음은 햇빛이 닿지 않으니 봄에도 녹지 않는다. 매년 조금씩 쌓여서 결국 호수 전체가 거대한 얼음 덩어리가 된다. 물고기? 전멸이다.
+  </p>
+
+  <p class="body-text">
+    하지만 현실에서는 얼음이 위에 뜨기 때문에, <strong>얼음이 뚜껑 역할</strong>을 한다. 찬 바람을 막아주고, 아래의 물은 약 4℃를 유지한다. 물고기와 수중 생물은 이 4℃의 물에서 겨울을 난다.
+  </p>
+
+  <div class="funfact">
+    <div class="funfact-icon">🐟</div>
+    <div class="funfact-body">
+      <div class="funfact-title">4℃의 비밀</div>
+      <div class="funfact-text">물은 정확히 <strong>4℃</strong>일 때 가장 무겁다. 0℃에 가까워지면 오히려 가벼워진다. 그래서 겨울에 호수 바닥은 항상 4℃를 유지한다. 자연이 만든 완벽한 온도 조절 시스템이다.</div>
+    </div>
+  </div>
+
+  <!-- ━━━ CHAPTER 3 ━━━ -->
+
+  <div class="section-header">
+    <div class="section-number">Chapter 03</div>
+    <h2 class="section-title">특이한 성질 ② — 물은 성격이 느긋하다</h2>
+  </div>
+
+  <p class="body-text">
+    여름에 해변에 가본 적이 있는가? 한낮에 모래사장 위를 걸으면 발바닥이 화상을 입을 만큼 뜨겁다. 그런데 바닷물에 들어가면? 시원하다. 같은 햇빛을 받았는데 왜 이렇게 다를까?
+  </p>
+
+  <p class="body-text">
+    답은 <strong>비열</strong>이라는 개념에 있다. 비열이란 "어떤 물질 1g의 온도를 1℃ 올리는 데 필요한 에너지"다. 쉽게 말하면, <strong>얼마나 데우기 어려운가</strong>를 나타내는 숫자다. 숫자가 클수록 데우기 어렵고, 반대로 식히기도 어렵다.
+  </p>
+
+  <div class="num-grid">
+    <div class="num-card">
+      <div class="num-big">4.18</div>
+      <div class="num-label">물의 비열<br>(J/g·℃)</div>
+    </div>
+    <div class="num-card">
+      <div class="num-big">0.45</div>
+      <div class="num-label">철의 비열<br>(J/g·℃)</div>
+    </div>
+    <div class="num-card">
+      <div class="num-big">0.84</div>
+      <div class="num-label">모래의 비열<br>(J/g·℃)</div>
+    </div>
+    <div class="num-card">
+      <div class="num-big" style="color:var(--coral);">×9.3</div>
+      <div class="num-label">물은 철보다<br>9.3배 데우기 어렵다</div>
+    </div>
+  </div>
+
+  <p class="body-text">
+    물의 비열은 4.18이고, 모래의 비열은 0.84다. 물은 모래보다 약 <strong>5배</strong>나 데우기 어렵다. 그래서 같은 햇빛을 받아도 모래는 금방 뜨거워지고, 바닷물은 천천히 따뜻해진다.
+  </p>
+
+  <p class="body-text">
+    그런데 왜 물의 비열이 이렇게 높을까? 다시 수소결합이다. 물의 온도를 올리려면 물 분자들을 더 빠르게 움직이게 해야 하는데, 물 분자들은 수소결합으로 서로 붙들고 있기 때문에 떼어내는 데 에너지가 더 많이 필요한 것이다. 마치 손을 꼭 잡고 있는 30명을 흩어지게 하려면 힘이 많이 드는 것과 같다.
+  </p>
+
+  <div class="keypoint">
+    <div class="keypoint-label">💡 이것이 의미하는 것</div>
+    바다는 거대한 온도 조절 장치다. 낮에는 열을 천천히 흡수하고, 밤에는 천천히 내뿜는다. 이 덕분에 바닷가 도시는 낮과 밤의 기온 차이가 작다. 물의 비열이 낮았다면 지구의 낮과 밤 온도 차이는 수십 도가 넘었을 것이고, 대부분의 생명체가 살 수 없었을 것이다.
+  </div>
+
+  <!-- ━━━ CHAPTER 4 ━━━ -->
+
+  <div class="section-header">
+    <div class="section-number">Chapter 04</div>
+    <h2 class="section-title">특이한 성질 ③ — 보이지 않는 막, 표면장력</h2>
+  </div>
+
+  <p class="body-text">
+    컵에 물을 가득 따르고, 동전을 아주 천천히 하나씩 넣어보자. 물이 넘칠 것 같은데도 넘치지 않는다. 오히려 물이 컵 위로 <strong>볼록하게 올라온다</strong>. 마치 보이지 않는 막이 물을 감싸고 있는 것 같다.
+  </p>
+
+  <p class="body-text">
+    이것이 <strong>표면장력</strong>이다. 물 내부의 분자는 사방으로 이웃 분자에게 둘러싸여 있어서 모든 방향으로 균형 있게 끌어당겨진다. 그런데 물 표면의 분자는 위에는 공기뿐이니 위로 잡아당길 친구가 없다. 그래서 옆과 아래에 있는 분자들을 <strong>더 강하게</strong> 잡아당긴다. 이 힘이 물 표면을 팽팽하게 만들어서, 마치 보이지 않는 고무 막을 씌운 것처럼 만드는 것이다.
+  </p>
+
+  <div class="funfact">
+    <div class="funfact-icon">🦟</div>
+    <div class="funfact-body">
+      <div class="funfact-title">소금쟁이의 비밀</div>
+      <div class="funfact-text">소금쟁이가 물 위를 걸을 수 있는 이유가 바로 이 표면장력이다. 소금쟁이의 다리에는 아주 작은 털이 빽빽이 나 있어서 물을 밀어내고, 표면장력이 만든 보이지 않는 막 위에 올라타는 것이다. 재미있는 실험: 물에 비누를 풀면 표면장력이 약해져서 소금쟁이는 바로 가라앉는다!</div>
+    </div>
+  </div>
+
+  <p class="body-text">
+    표면장력과 관련된 또 하나의 중요한 현상이 있다. <strong>모세관 현상</strong>이다. 가느다란 유리관을 물에 담그면 물이 관 안에서 저절로 올라간다. 물 분자가 유리 벽면에 달라붙고, 뒤따르는 물 분자들이 수소결합으로 서로 잡아당기면서 줄줄이 올라오는 것이다.
+  </p>
+
+  <p class="body-text">
+    이 원리가 자연에서 어떻게 쓰이는지 생각해보자. <strong>나무</strong>다. 키가 100미터가 넘는 세쿼이아 나무도 펌프 없이 뿌리에서 꼭대기까지 물을 끌어올린다. 물 분자들의 수소결합 — 서로 잡아당기는 힘 — 이 없었다면 이것은 불가능하다. 나무가 이렇게 클 수 있는 것도, 따지고 보면 물의 수소결합 덕분이다.
+  </p>
+
+  <!-- ━━━ CHAPTER 5 ━━━ -->
+
+  <div class="section-header">
+    <div class="section-number">Chapter 05</div>
+    <h2 class="section-title">특이한 성질 ④ — 무엇이든 녹이는 마법사</h2>
+  </div>
+
+  <p class="body-text">
+    소금을 물에 넣으면 녹는다. 설탕도 녹는다. 식초도, 꿀도, 비타민도 녹는다. 물은 거의 모든 것을 녹인다. 그래서 과학자들은 물을 <strong>"만능 용매(Universal Solvent)"</strong>라고 부른다.
+  </p>
+
+  <p class="body-text">
+    왜 이렇게 잘 녹일까? 다시 극성이다. 소금(NaCl)을 예로 들어보자. 소금은 나트륨(Na⁺)과 염소(Cl⁻)가 서로 끌어당기면서 결합해 있다. 여기에 물을 부으면, 물 분자의 (-) 쪽이 나트륨(+)을, (+) 쪽이 염소(-)를 둘러싼다. 물 분자들이 소금 입자를 하나하나 떼어내서 감싸버리는 것이다. 마치 작은 자석 군단이 달라붙어서 분해하는 것과 같다.
+  </p>
+
+  <div class="keypoint">
+    <div class="keypoint-label">💡 왜 이게 중요할까?</div>
+    우리 몸속을 생각해보자. 음식에서 나온 영양분이 혈액(대부분이 물)에 녹아서 온몸으로 운반된다. 세포에서 만든 노폐물도 물에 녹아서 콩팥으로 가고, 소변으로 나간다. 물이 만능 용매가 아니었다면, 영양분을 운반할 수 없고, 노폐물을 배출할 수 없다. 즉, <strong>생명 활동 자체가 불가능</strong>하다.
+  </div>
+
+  <div class="pause">
+    <div class="pause-label">🤚 잠깐, 여기서 생각!</div>
+    물이 만능 용매라면, 물이 녹이지 못하는 것은 뭘까? 기름! 기름은 극성이 없는 "비극성" 물질이다. 극성인 물은 비극성인 기름을 녹이지 못한다. "같은 성질끼리 녹인다"는 원리 때문이다. 그래서 물과 기름은 아무리 섞어도 분리된다.
+  </div>
+
+  <!-- ━━━ SUMMARY ━━━ -->
+
+  <div class="section-header">
+    <div class="section-number">정리</div>
+    <h2 class="section-title">한눈에 보는 물의 4대 비밀</h2>
+  </div>
+
+  <p class="body-text">
+    지금까지 배운 물의 4가지 특이한 성질과, 그 성질이 왜 생명에 중요한지 정리해보자.
+  </p>
+
+  <div class="compare-wrap">
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th style="width:22%">성질</th>
+          <th style="width:28%">보통 물질</th>
+          <th style="width:50%">물은?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>얼 때</strong></td>
+          <td>무거워짐 (가라앉음)</td>
+          <td class="hl">가벼워짐 (뜬다!) → 호수 밑 생물이 산다</td>
+        </tr>
+        <tr>
+          <td><strong>온도 변화</strong></td>
+          <td>빨리 뜨겁고 빨리 식음</td>
+          <td class="hl">천천히 변한다 → 지구의 기후를 안정시킨다</td>
+        </tr>
+        <tr>
+          <td><strong>표면</strong></td>
+          <td>표면장력이 약함</td>
+          <td class="hl">매우 강함 → 소금쟁이, 나무의 물 운반이 가능</td>
+        </tr>
+        <tr>
+          <td><strong>녹이기</strong></td>
+          <td>일부만 녹임</td>
+          <td class="hl">거의 다 녹임 → 혈액이 영양분을 운반할 수 있다</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="body-text">
+    그리고 이 4가지의 원인은 전부 <strong>하나</strong>로 연결된다.
+  </p>
+
+  <div class="concept">
+    <span class="concept-badge">핵심 연결고리</span>
+    <h3>모든 것의 시작: 104.5°의 꺾임</h3>
+    <p>
+      분자가 104.5°로 꺾여 있다 → 극성이 생긴다 → 수소결합이 만들어진다 → 4대 특이한 성질이 나타난다. <strong>단 하나의 원인</strong>이 모든 것을 설명한다. 이것이 과학의 아름다움이다.
+    </p>
+  </div>
+
+  <!-- ━━━ NUMBERS ━━━ -->
+
+  <div class="section-header">
+    <div class="section-number">숫자로 보기</div>
+    <h2 class="section-title">물에 대한 놀라운 숫자들</h2>
+  </div>
+
+  <div class="num-grid">
+    <div class="num-card">
+      <div class="num-big">104.5°</div>
+      <div class="num-label">물 분자의<br>꺾인 각도</div>
+    </div>
+    <div class="num-card">
+      <div class="num-big">+9%</div>
+      <div class="num-label">얼면 부피가<br>9% 늘어남</div>
+    </div>
+    <div class="num-card">
+      <div class="num-big">71%</div>
+      <div class="num-label">지구 표면 중<br>물의 비율</div>
+    </div>
+    <div class="num-card">
+      <div class="num-big">60%</div>
+      <div class="num-label">인체에서<br>물의 비율</div>
+    </div>
+    <div class="num-card">
+      <div class="num-big">4℃</div>
+      <div class="num-label">물이 가장<br>무거운 온도</div>
+    </div>
+    <div class="num-card">
+      <div class="num-big">100℃</div>
+      <div class="num-label">1기압에서<br>끓는 온도</div>
+    </div>
+  </div>
+
+  <!-- ━━━ PREVIEW ━━━ -->
+
+  <div class="section-header">
+    <div class="section-number">다음 수업 미리보기</div>
+    <h2 class="section-title">수업에서는 무엇을 할까?</h2>
+  </div>
+
+  <p class="body-text">
+    여기까지가 사전학습이다. 이 내용을 머릿속에 넣고 수업에 가면 된다. 수업에서는 이 개념들을 바탕으로 더 깊이 탐구하고, 토론하고, 새로운 질문을 만들게 된다. 아래 세 가지를 미리 생각해오면 수업이 훨씬 재밌을 것이다.
+  </p>
+
+  <div class="concept">
+    <span class="concept-badge">수업 전 생각거리</span>
+    <h3>이것만 생각해오면 된다</h3>
+    <p>
+      ❶ 만약 화성에 물을 부으면 어떻게 될까? (힌트: 화성의 기압은 지구의 1/100이다.)<br><br>
+      ❷ 물 대신 다른 액체로 살아가는 생명체가 있을 수 있을까?<br><br>
+      ❸ 물의 4가지 성질 중, 가장 "고마운" 성질은 무엇이라고 생각하는가? 그 이유는?
+    </p>
+  </div>
+
+  <!-- ━━━ QUIZ ━━━ -->
+
+  <div class="section-header">
+    <div class="section-number">확인 퀴즈</div>
+    <h2 class="section-title">잘 읽었는지 확인해보자</h2>
+  </div>
+
+  <div class="quiz-section">
+    <div class="quiz-section-title">3문제만 풀어보자</div>
+    <div class="quiz-section-sub">답을 클릭하면 바로 정답과 해설을 볼 수 있다. 틀려도 괜찮다 — 틀리고 나서 확인하면 오히려 더 오래 기억에 남는다.</div>
+
+    <div class="quiz-block" id="q1">
+      <div class="quiz-q" data-num="1">물의 모든 특이한 성질을 만들어내는 근본 원인은?</div>
+      <div class="quiz-opts">
+        <div class="quiz-opt" onclick="answer('q1',this,false)">
+          <span class="marker">A</span>
+          <span>물이 투명하기 때문에</span>
+        </div>
+        <div class="quiz-opt" onclick="answer('q1',this,false)">
+          <span class="marker">B</span>
+          <span>물에 미네랄이 들어 있기 때문에</span>
+        </div>
+        <div class="quiz-opt" onclick="answer('q1',this,true)">
+          <span class="marker">C</span>
+          <span>분자가 꺾여 있어 극성이 생기고, 수소결합이 만들어지기 때문에</span>
+        </div>
+        <div class="quiz-opt" onclick="answer('q1',this,false)">
+          <span class="marker">D</span>
+          <span>물이 지구에 많이 있기 때문에</span>
+        </div>
+      </div>
+      <div class="quiz-explain" id="q1-fb"></div>
+    </div>
+
+    <div class="quiz-block" id="q2">
+      <div class="quiz-q" data-num="2">겨울에 호수가 위에서부터 어는 이유는?</div>
+      <div class="quiz-opts">
+        <div class="quiz-opt" onclick="answer('q2',this,false)">
+          <span class="marker">A</span>
+          <span>찬 공기가 위에서 내려오기 때문에</span>
+        </div>
+        <div class="quiz-opt" onclick="answer('q2',this,true)">
+          <span class="marker">B</span>
+          <span>얼음이 물보다 가벼워서 뜨기 때문에</span>
+        </div>
+        <div class="quiz-opt" onclick="answer('q2',this,false)">
+          <span class="marker">C</span>
+          <span>호수 바닥에 열이 있어서</span>
+        </div>
+        <div class="quiz-opt" onclick="answer('q2',this,false)">
+          <span class="marker">D</span>
+          <span>물 위에 먼지가 있어 더 잘 얼어서</span>
+        </div>
+      </div>
+      <div class="quiz-explain" id="q2-fb"></div>
+    </div>
+
+    <div class="quiz-block" id="q3">
+      <div class="quiz-q" data-num="3">바닷가 도시의 기온이 안정적인 이유와 가장 관련 있는 물의 성질은?</div>
+      <div class="quiz-opts">
+        <div class="quiz-opt" onclick="answer('q3',this,false)">
+          <span class="marker">A</span>
+          <span>밀도 역전</span>
+        </div>
+        <div class="quiz-opt" onclick="answer('q3',this,false)">
+          <span class="marker">B</span>
+          <span>표면장력</span>
+        </div>
+        <div class="quiz-opt" onclick="answer('q3',this,false)">
+          <span class="marker">C</span>
+          <span>만능 용매</span>
+        </div>
+        <div class="quiz-opt" onclick="answer('q3',this,true)">
+          <span class="marker">D</span>
+          <span>높은 비열</span>
+        </div>
+      </div>
+      <div class="quiz-explain" id="q3-fb"></div>
+    </div>
+  </div>
+
+</article>
+
+<footer class="page-footer">
+  2026 수·과융합영재원 가우스 반 · Week 02 of 21<br>
+  <a href="./">← 전체 커리큘럼</a> · <a href="week-03.html">다음: 트러스구조 →</a>
+</footer>
+
+<script>
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+  document.getElementById('scrollProgress').style.width = pct + '%';
+});
+
+const done = {};
+const fb = {
+  q1: {
+    ok: '정답! 물 분자가 104.5°로 꺾여 있어서 극성이 생기고 → 수소결합이 만들어지고 → 4가지 특이한 성질이 전부 여기서 나온다. 하나의 원인이 모든 걸 설명하는 아름다운 구조다.',
+    no: '아쉽다! 정답은 C번이다. 물의 모든 비밀은 분자의 꺾인 구조(104.5°) → 극성 → 수소결합으로 이어지는 하나의 인과관계에서 시작된다.'
+  },
+  q2: {
+    ok: '정답! 물은 얼면 수소결합이 규칙적 구조를 만들어 부피가 9% 늘어나고, 가벼워진다. 가벼우니까 뜨고, 그래서 위에서부터 어는 것이다. 이 덕분에 호수 아래의 물고기가 살아남는다.',
+    no: '아쉽다! 정답은 B번이다. 핵심은 얼음의 밀도가 물보다 낮다는 것이다. 얼음이 가벼워서 뜨니까, 위에서부터 어는 것이다.'
+  },
+  q3: {
+    ok: '정답! 물의 높은 비열 때문에 바다는 천천히 뜨거워지고 천천히 식는다. 바다가 거대한 온도 조절 장치 역할을 해서, 해안가 도시의 기온이 안정적으로 유지된다.',
+    no: '아쉽다! 정답은 D번, 높은 비열이다. 비열이 높다는 건 온도 변화가 느리다는 뜻이다. 바다가 열을 천천히 흡수하고 천천히 내뿜기 때문에 해안 도시의 기온이 안정적인 것이다.'
+  }
+};
+
+function answer(qid, el, correct) {
+  if (done[qid]) return;
+  done[qid] = true;
+  const block = document.getElementById(qid);
+  block.querySelectorAll('.quiz-opt').forEach(o => o.style.pointerEvents = 'none');
+  const explain = document.getElementById(qid + '-fb');
+  if (correct) {
+    el.classList.add('correct');
+    explain.className = 'quiz-explain show ok';
+    explain.textContent = '✅ ' + fb[qid].ok;
+  } else {
+    el.classList.add('wrong');
+    block.querySelectorAll('.quiz-opt').forEach(o => {
+      if (o.getAttribute('onclick').includes('true')) o.classList.add('correct');
+    });
+    explain.className = 'quiz-explain show no';
+    explain.textContent = '❌ ' + fb[qid].no;
+  }
+}
+</script>
+</body>
+</html>
