@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 가우스 반 · 탐험 가이드</title>
+<meta name="description" content="2026 수·과융합영재원 가우스 반 21주 커리큘럼 학습 가이드">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧭</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Noto+Serif+KR:wght@700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #2c2416;
+  --ink-light: #6b5d4f;
+  --ink-faint: #a89882;
+  --paper: #faf6ef;
+  --paper-warm: #f5efe4;
+  --card: #ffffff;
+  --orange: #e8772e;
+  --orange-soft: #fef0e4;
+  --blue: #3a86c8;
+  --blue-soft: #e8f2fc;
+  --green: #2d8659;
+  --green-soft: #e4f5ec;
+  --purple: #7c5cbf;
+  --purple-soft: #f0eafa;
+  --coral: #e25b45;
+  --coral-soft: #fce8e5;
+  --gold: #d4a72c;
+  --gold-soft: #fdf6de;
+  --teal: #1a9b8a;
+  --teal-soft: #e0f5f2;
+  --border: #e8e0d4;
+  --shadow-sm: 0 1px 3px rgba(44,36,22,0.06);
+  --shadow: 0 4px 20px rgba(44,36,22,0.07);
+  --shadow-lg: 0 12px 40px rgba(44,36,22,0.10);
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* ── HERO ── */
+.hero {
+  text-align: center;
+  padding: 4rem 1rem 2.5rem;
+  position: relative;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 320px;
+  background: linear-gradient(180deg, var(--orange-soft) 0%, var(--paper) 100%);
+  z-index: -1;
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: 100px;
+  padding: 0.4rem 1.2rem;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--ink-light);
+  margin-bottom: 1.2rem;
+  box-shadow: var(--shadow-sm);
+}
+.hero h1 {
+  font-family: 'Noto Serif KR', serif;
+  font-size: clamp(1.8rem, 4.5vw, 2.8rem);
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--ink);
+  margin-bottom: 0.8rem;
+}
+.hero h1 .accent { color: var(--orange); }
+.subtitle {
+  font-size: 0.95rem;
+  color: var(--ink-light);
+  font-weight: 400;
+  line-height: 1.6;
+  max-width: 480px;
+  margin: 0 auto 1.5rem;
+}
+.hero-stats {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+}
+.stat-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--orange);
+}
+.stat-label {
+  font-size: 0.72rem;
+  color: var(--ink-faint);
+  letter-spacing: 0.03em;
+}
+
+/* ── PROGRESS ── */
+.progress-section {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.2rem 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow-sm);
+}
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.7rem;
+}
+.progress-label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--ink);
+}
+.progress-count {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem;
+  color: var(--orange);
+  font-weight: 600;
+}
+.progress-bar {
+  height: 8px;
+  background: var(--paper-warm);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--orange), var(--gold));
+  border-radius: 4px;
+  transition: width 1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ── SECTION LABEL ── */
+.section-label {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 1.2rem;
+  font-size: 0.75rem;
+  font-family: 'JetBrains Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-faint);
+}
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ── WEEK CARDS ── */
+.weeks-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1rem;
+  margin-bottom: 3rem;
+}
+
+.week-card {
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.4rem;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  position: relative;
+  overflow: hidden;
+}
+.week-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 4px; height: 100%;
+  border-radius: 2px 0 0 2px;
+  transition: opacity 0.3s;
+}
+
+/* Ready state */
+.week-card.is-ready {
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+}
+.week-card.is-ready:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--orange);
+}
+.week-card.is-ready::before {
+  background: var(--orange);
+  opacity: 1;
+}
+
+/* Locked / Soon state */
+.week-card.is-locked {
+  opacity: 0.55;
+}
+.week-card.is-locked::before {
+  background: var(--border);
+  opacity: 0.5;
+}
+.week-card.is-soon {
+  opacity: 0.7;
+  box-shadow: var(--shadow-sm);
+}
+.week-card.is-soon::before {
+  background: var(--blue);
+  opacity: 0.6;
+}
+
+/* Card internals */
+.card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.8rem;
+}
+.card-emoji {
+  font-size: 2rem;
+  line-height: 1;
+  filter: grayscale(0);
+  transition: transform 0.3s;
+}
+.week-card.is-ready:hover .card-emoji {
+  transform: scale(1.15) rotate(-5deg);
+}
+.week-card.is-locked .card-emoji {
+  filter: grayscale(0.6);
+}
+
+.card-badges {
+  display: flex;
+  gap: 0.35rem;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.badge {
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: 100px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+.badge-week {
+  background: var(--paper-warm);
+  color: var(--ink-light);
+}
+.badge-hours {
+  background: var(--paper-warm);
+  color: var(--ink-faint);
+  font-family: 'JetBrains Mono', monospace;
+}
+.badge-ready {
+  background: var(--green-soft);
+  color: var(--green);
+}
+.badge-soon {
+  background: var(--blue-soft);
+  color: var(--blue);
+}
+.badge-locked {
+  background: var(--paper-warm);
+  color: var(--ink-faint);
+}
+
+.card-date {
+  font-size: 0.75rem;
+  color: var(--ink-faint);
+  margin-bottom: 0.3rem;
+  font-family: 'JetBrains Mono', monospace;
+}
+.card-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.4;
+  margin-bottom: 0.5rem;
+  color: var(--ink);
+}
+.card-desc {
+  font-size: 0.82rem;
+  color: var(--ink-light);
+  line-height: 1.65;
+  margin-bottom: 0.8rem;
+  flex: 1;
+}
+.card-tags {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+.tag {
+  font-size: 0.68rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+  background: var(--paper-warm);
+  color: var(--ink-faint);
+  font-weight: 500;
+}
+
+/* Color accents per card */
+.week-card[data-color="orange"].is-ready::before { background: var(--orange); }
+.week-card[data-color="blue"].is-ready::before { background: var(--blue); }
+.week-card[data-color="green"].is-ready::before { background: var(--green); }
+.week-card[data-color="purple"].is-ready::before { background: var(--purple); }
+.week-card[data-color="coral"].is-ready::before { background: var(--coral); }
+.week-card[data-color="teal"].is-ready::before { background: var(--teal); }
+.week-card[data-color="gold"].is-ready::before { background: var(--gold); }
+
+.week-card[data-color="orange"].is-ready:hover { border-color: var(--orange); }
+.week-card[data-color="blue"].is-ready:hover { border-color: var(--blue); }
+.week-card[data-color="green"].is-ready:hover { border-color: var(--green); }
+.week-card[data-color="purple"].is-ready:hover { border-color: var(--purple); }
+.week-card[data-color="coral"].is-ready:hover { border-color: var(--coral); }
+.week-card[data-color="teal"].is-ready:hover { border-color: var(--teal); }
+.week-card[data-color="gold"].is-ready:hover { border-color: var(--gold); }
+
+/* Ready card glow on hover */
+.card-go {
+  display: none;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--orange);
+  margin-top: 0.5rem;
+}
+.card-go::after {
+  content: '→';
+  transition: transform 0.2s;
+}
+.week-card.is-ready .card-go { display: flex; }
+.week-card.is-ready:hover .card-go::after { transform: translateX(4px); }
+
+/* ── FOOTER ── */
+.site-footer {
+  text-align: center;
+  padding: 2rem 1rem 3rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+  line-height: 1.8;
+}
+.site-footer a {
+  color: var(--orange);
+  text-decoration: none;
+}
+
+/* ── ENTRANCE ANIMATION ── */
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.week-card {
+  animation: cardIn 0.5s ease both;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 700px) {
+  .weeks-grid {
+    grid-template-columns: 1fr;
+  }
+  .hero { padding: 3rem 0.5rem 2rem; }
+  .hero-stats { gap: 1.2rem; }
+  .stat-num { font-size: 1.3rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <section class="hero">
+    <div class="hero-badge">🧭 2026학년도 · 가우스 반</div>
+    <h1>수·과 융합영재원<br><span class="accent">탐험 가이드</span></h1>
+    <p class="subtitle">매주 토요일, 새로운 과학의 문이 열린다.<br>이 가이드를 읽고 수업에 가면, 모든 게 달라진다.</p>
+    <div class="hero-stats">
+      <div class="stat">
+        <span class="stat-num" id="readyNum">0</span>
+        <span class="stat-label">학습 가능</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">21</span>
+        <span class="stat-label">전체 주차</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">82h</span>
+        <span class="stat-label">총 수업시간</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="progress-section">
+    <div class="progress-header">
+      <span class="progress-label">사전학습 진행률</span>
+      <span class="progress-count" id="progressText">0 / 21</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+  </section>
+
+  <div class="section-label">학습 가능한 주차</div>
+  <section class="weeks-grid" id="readyGrid"></section>
+
+  <div class="section-label">다음 주차 예고</div>
+  <section class="weeks-grid" id="soonGrid"></section>
+
+  <div class="section-label">전체 커리큘럼</div>
+  <section class="weeks-grid" id="lockedGrid"></section>
+
+  <footer class="site-footer">
+    <p>초등학생을 위한 과학·수학 융합 사전학습 교재</p>
+    <p style="margin-top:4px">매주 수업 전에 읽어오면, 수업이 2배 재밌어진다.</p>
+    <p style="margin-top:10px">
+      <a href="https://soniceduke.github.io">soniceduke.github.io</a>
+    </p>
+  </footer>
+
+</div>
+
+<script>
+const weeks = [
+  { week:1,  date:"4.4(토)",   hours:3, emoji:"🧭", color:"orange", title:"나의 성격과 과학윤리", desc:"과학하는 사람의 약속, 나를 이해하기, 창의적 산출물 안내", tags:["과학윤리","메타인지","산출물"], status:"ready" },
+  { week:2,  date:"4.11(토)",  hours:4, emoji:"💧", color:"blue",   title:"물, 너는 누구니?", desc:"우주에서 가장 이상한 물질 — 수소결합, 밀도 역전, 표면장력, 만능 용매의 비밀", tags:["화학","물리","생태계"], status:"ready" },
+  { week:3,  date:"4.18(토)",  hours:4, emoji:"🌉", color:"green",  title:"트러스 구조", desc:"삼각형의 안정성, 힘의 분산, 좌굴, 생체모방공학", tags:["구조공학","수학","건축"], status:"soon" },
+  { week:4,  date:"4.25(토)",  hours:4, emoji:"📡", color:"teal",   title:"센서와 데이터로 움직임을 설계하다", desc:"ADC 변환, 피드백 루프, 통계 분석, IoT", tags:["센서","데이터","코딩"], status:"locked" },
+  { week:5,  date:"5.9(토)",   hours:4, emoji:"🎲", color:"purple", title:"게임 이론과 내쉬 균형", desc:"죄수의 딜레마, 보수행렬, 혼합전략, 보드게임 설계", tags:["게임이론","확률","전략"], status:"locked" },
+  { week:6,  date:"5.16(토)",  hours:4, emoji:"📐", color:"coral",  title:"입체도형과 공간 감각", desc:"정다면체, 오일러 공식, 위상수학, 4차원", tags:["기하학","위상수학","공간"], status:"locked" },
+  { week:7,  date:"5.30(토)",  hours:4, emoji:"🔐", color:"gold",   title:"보안기술 속 수학", desc:"RSA 암호, 소수, 모듈러 연산, 타원곡선, 양자암호", tags:["암호학","소수","보안"], status:"locked" },
+  { week:8,  date:"6.13(토)",  hours:4, emoji:"🔄", color:"blue",   title:"뒤집고 돌리고 나만의 도형 세상", desc:"평행·대칭·회전이동, 테셀레이션, 벽지군, 에셔", tags:["변환","대칭","예술"], status:"locked" },
+  { week:9,  date:"6.20(토)",  hours:4, emoji:"🧱", color:"orange", title:"블럭으로 탐구하는 STEAM 프로젝트", desc:"공학적 설계, 최적화, 무게중심, 실패 분석", tags:["STEAM","공학","설계"], status:"locked" },
+  { week:10, date:"6.27(토)",  hours:4, emoji:"🔢", color:"purple", title:"경우의 수", desc:"순열·조합, 파스칼 삼각형, 비둘기집 원리, 조합 폭발", tags:["조합론","확률","논리"], status:"locked" },
+  { week:11, date:"7.4(토)",   hours:4, emoji:"🥚", color:"coral",  title:"달걀을 지켜라!", desc:"충격량, 운동량 보존, 종단속도, 에너지 흡수", tags:["물리","공학","설계"], status:"locked" },
+  { week:12, date:"7.11(토)",  hours:4, emoji:"🌍", color:"green",  title:"지구의 미래 기후 예측하기", desc:"기후 모델, 되먹임 효과, 탄소 예산, 티핑포인트", tags:["환경","데이터","모델링"], status:"locked" },
+  { week:13, date:"7.25(토)",  hours:4, emoji:"🌐", color:"teal",   title:"코스페이시스 메타버스 공간 설계", desc:"3D 좌표, 블록 코딩, 보로노이 다이어그램, VR", tags:["메타버스","코딩","3D"], status:"locked" },
+  { week:14, date:"8.22(토)",  hours:4, emoji:"🤖", color:"blue",   title:"햄스터봇과 떠나는 코딩 탐험", desc:"알고리즘 효율성, 유한상태기계, PID 제어", tags:["로봇","코딩","알고리즘"], status:"locked" },
+  { week:15, date:"8.29(토)",  hours:4, emoji:"🎢", color:"coral",  title:"롤러코스터의 비밀!", desc:"에너지 보존, G-force, 최속강하선, 사이클로이드", tags:["물리","에너지","곡선"], status:"locked" },
+  { week:16, date:"9.5(토)",   hours:4, emoji:"⚙️", color:"gold",   title:"롤링볼 장치와 힘의 원리", desc:"단순기계 6가지, 기계적 이점, 카오스 이론", tags:["역학","기계","카오스"], status:"locked" },
+  { week:17, date:"9.12(토)",  hours:4, emoji:"🪐", color:"purple", title:"내 손 위에 우주", desc:"우주 거리 사다리, 케플러 법칙, 페르미 역설", tags:["천문학","척도","물리"], status:"locked" },
+  { week:18, date:"9.19(토)",  hours:4, emoji:"🧩", color:"teal",   title:"공감의 리더십 / 펜토미노", desc:"NP-완전, 대칭 분류, 폴리오미노, 리더십", tags:["퍼즐","리더십","조합"], status:"locked" },
+  { week:19, date:"10.17(토)", hours:4, emoji:"🔺", color:"orange", title:"오토마타 / 프랙탈과 시에르핀스키", desc:"프랙탈 차원, L-시스템, 기구학, 캠 설계", tags:["프랙탈","오토마타","차원"], status:"locked" },
+  { week:20, date:"10.24(토)", hours:4, emoji:"✈️", color:"green",  title:"종이비행기 / 환경 오염", desc:"양력, 레이놀즈 수, 환경 데이터 분석", tags:["비행","환경","데이터"], status:"locked" },
+  { week:21, date:"10.31(토)", hours:3, emoji:"🎤", color:"coral",  title:"산출물 발표회", desc:"과학적 소통, 데이터 시각화, 메타 학습", tags:["발표","정리","피어리뷰"], status:"locked" }
+];
+
+function statusBadge(s) {
+  if (s === 'ready') return { text:'학습 가능', cls:'badge-ready' };
+  if (s === 'soon')  return { text:'다음 주차', cls:'badge-soon' };
+  return { text:'예정', cls:'badge-locked' };
+}
+
+function makeCard(w, delay) {
+  const st = statusBadge(w.status);
+  const isReady = w.status === 'ready';
+  const el = document.createElement(isReady ? 'a' : 'div');
+
+  if (isReady) el.href = `lectures/week-${String(w.week).padStart(2,'0')}.html`;
+
+  el.className = `week-card ${isReady ? 'is-ready' : w.status === 'soon' ? 'is-soon' : 'is-locked'}`;
+  el.dataset.color = w.color;
+  el.style.animationDelay = `${delay * 0.06}s`;
+
+  el.innerHTML = `
+    <div class="card-top">
+      <span class="card-emoji">${w.emoji}</span>
+      <div class="card-badges">
+        <span class="badge badge-week">${w.week}주차</span>
+        <span class="badge badge-hours">${w.hours}h</span>
+        <span class="badge ${st.cls}">${st.text}</span>
+      </div>
+    </div>
+    <div class="card-date">${w.date}</div>
+    <div class="card-title">${w.title}</div>
+    <div class="card-desc">${w.desc}</div>
+    <div class="card-tags">
+      ${w.tags.map(t => `<span class="tag">${t}</span>`).join('')}
+    </div>
+    <div class="card-go">읽으러 가기</div>
+  `;
+  return el;
+}
+
+function render() {
+  const readyGrid = document.getElementById('readyGrid');
+  const soonGrid = document.getElementById('soonGrid');
+  const lockedGrid = document.getElementById('lockedGrid');
+  let readyCount = 0;
+  let di = 0;
+
+  weeks.forEach(w => {
+    if (w.status === 'ready') {
+      readyCount++;
+      readyGrid.appendChild(makeCard(w, di++));
+    } else if (w.status === 'soon') {
+      soonGrid.appendChild(makeCard(w, di++));
+    } else {
+      lockedGrid.appendChild(makeCard(w, di++));
+    }
+  });
+
+  document.getElementById('readyNum').textContent = readyCount;
+  document.getElementById('progressText').textContent = `${readyCount} / ${weeks.length}`;
+  document.getElementById('progressFill').style.width = `${(readyCount / weeks.length) * 100}%`;
+}
+
+render();
+</script>
+</body>
+</html>
