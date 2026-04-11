@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 03 · 트러스 구조 | 가우스 반</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Noto+Serif+KR:wght@400;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #2c2c2c;
+  --ink-light: #555;
+  --ink-faint: #888;
+  --paper: #f9f7f3;
+  --card: #ffffff;
+  --green: #2d7d46;
+  --green-deep: #1a5c30;
+  --green-soft: #e6f4eb;
+  --green-glow: #d4edda;
+  --brown: #8b6914;
+  --brown-soft: #fdf5e0;
+  --steel: #4a6fa5;
+  --steel-soft: #e8eff8;
+  --coral: #d94f30;
+  --coral-soft: #fce8e3;
+  --gold: #c9922a;
+  --gold-soft: #fdf6e3;
+  --violet: #6a4fc7;
+  --violet-soft: #f0ebfa;
+  --sage: #2d6a4f;
+  --sage-soft: #d8f3dc;
+  --border: #e4dfd6;
+  --shadow: 0 2px 24px rgba(0,0,0,0.05);
+  --shadow-lg: 0 8px 40px rgba(0,0,0,0.08);
+  --radius: 16px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── HERO ── */
+.hero {
+  position: relative;
+  min-height: 55vh;
+  display: flex;
+  align-items: flex-end;
+  padding: 3rem 2rem 2.5rem;
+  overflow: hidden;
+  background: linear-gradient(160deg, #1a3a1a 0%, #2d5a2d 30%, #3d7a3d 60%, #5a9a5a 100%);
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 50% at 25% 80%, rgba(212,237,218,0.2) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 40% at 80% 20%, rgba(139,105,20,0.15) 0%, transparent 60%),
+    repeating-linear-gradient(
+      60deg,
+      transparent,
+      transparent 60px,
+      rgba(255,255,255,0.015) 60px,
+      rgba(255,255,255,0.015) 61px
+    ),
+    repeating-linear-gradient(
+      -60deg,
+      transparent,
+      transparent 60px,
+      rgba(255,255,255,0.015) 60px,
+      rgba(255,255,255,0.015) 61px
+    );
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 80px;
+  background: linear-gradient(to top, var(--paper) 0%, transparent 100%);
+}
+.hero-content {
+  max-width: 720px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+  color: #fff;
+  width: 100%;
+}
+.hero-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.6;
+  margin-bottom: 1rem;
+}
+.hero h1 {
+  font-family: 'Noto Serif KR', serif;
+  font-size: clamp(2rem, 6vw, 3rem);
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 0.8rem;
+}
+.hero-desc {
+  font-size: 1rem;
+  opacity: 0.8;
+  font-weight: 300;
+  line-height: 1.7;
+  max-width: 520px;
+}
+.hero-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1.2rem;
+}
+.hero-chip {
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 100px;
+  padding: 0.3rem 0.9rem;
+  font-size: 0.75rem;
+}
+
+/* ── CONTENT ── */
+.content {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2rem 2rem 4rem;
+}
+.reading-info {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 1rem 0 2rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2.5rem;
+  font-size: 0.82rem;
+  color: var(--ink-faint);
+}
+.reading-dot {
+  width: 6px; height: 6px;
+  background: var(--green);
+  border-radius: 50%;
+}
+
+/* ── TEXT ── */
+.story {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 1.08rem;
+  line-height: 2;
+  color: var(--ink);
+  margin-bottom: 2rem;
+}
+.story.first-para::first-letter {
+  font-size: 3.2em;
+  float: left;
+  line-height: 0.85;
+  margin: 0.05em 0.12em 0 0;
+  color: var(--green-deep);
+  font-weight: 700;
+}
+.body-text {
+  font-size: 1rem;
+  line-height: 2;
+  color: var(--ink);
+  margin-bottom: 1.5rem;
+}
+.body-text strong { color: var(--green-deep); font-weight: 700; }
+
+/* ── SECTIONS ── */
+.section-header {
+  margin: 3rem 0 1.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+}
+.section-number {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 0.4rem;
+}
+.section-title {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.4;
+}
+
+/* ── CONCEPT CARD ── */
+.concept {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.8rem;
+  margin: 1.8rem 0;
+  box-shadow: var(--shadow);
+  position: relative;
+}
+.concept::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 24px;
+  width: 40px; height: 3px;
+  background: var(--green);
+  border-radius: 0 0 2px 2px;
+}
+.concept-badge {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--green);
+  background: var(--green-soft);
+  padding: 0.2rem 0.7rem;
+  border-radius: 100px;
+  margin-bottom: 0.8rem;
+}
+.concept h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 0.7rem;
+  color: var(--green-deep);
+}
+.concept p {
+  font-size: 0.95rem;
+  line-height: 1.9;
+  color: var(--ink-light);
+}
+
+/* ── CALLOUTS ── */
+.pause {
+  background: var(--gold-soft);
+  border-left: 4px solid var(--gold);
+  border-radius: 0 12px 12px 0;
+  padding: 1.3rem 1.5rem;
+  margin: 2rem 0;
+  font-size: 0.95rem;
+  line-height: 1.85;
+}
+.pause-label {
+  font-weight: 700;
+  color: #9a7b1a;
+  margin-bottom: 0.3rem;
+  font-size: 0.88rem;
+}
+
+.analogy {
+  background: var(--violet-soft);
+  border-left: 4px solid var(--violet);
+  border-radius: 0 12px 12px 0;
+  padding: 1.3rem 1.5rem;
+  margin: 1.8rem 0;
+  font-size: 0.95rem;
+  line-height: 1.85;
+}
+.analogy-label {
+  font-weight: 700;
+  color: var(--violet);
+  margin-bottom: 0.3rem;
+  font-size: 0.88rem;
+}
+
+.keypoint {
+  background: var(--green-glow);
+  border: 1px solid #a3d4b3;
+  border-radius: var(--radius);
+  padding: 1.3rem 1.5rem;
+  margin: 1.8rem 0;
+  font-size: 0.95rem;
+  line-height: 1.85;
+}
+.keypoint-label {
+  font-weight: 700;
+  color: var(--green-deep);
+  margin-bottom: 0.3rem;
+  font-size: 0.88rem;
+}
+
+.mathbox {
+  background: var(--steel-soft);
+  border-left: 4px solid var(--steel);
+  border-radius: 0 12px 12px 0;
+  padding: 1.3rem 1.5rem;
+  margin: 1.8rem 0;
+  font-size: 0.95rem;
+  line-height: 1.85;
+}
+.mathbox-label {
+  font-weight: 700;
+  color: var(--steel);
+  margin-bottom: 0.3rem;
+  font-size: 0.88rem;
+}
+
+/* ── FUNFACT ── */
+.funfact {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  margin: 1.8rem 0;
+  box-shadow: var(--shadow);
+}
+.funfact-icon {
+  width: 44px; height: 44px;
+  background: var(--coral-soft);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+.funfact-body { flex: 1; }
+.funfact-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--coral);
+  margin-bottom: 0.3rem;
+}
+.funfact-text {
+  font-size: 0.9rem;
+  line-height: 1.8;
+  color: var(--ink-light);
+}
+
+/* ── COMPARE TABLE ── */
+.compare-wrap {
+  margin: 1.8rem 0;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+.compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+.compare-table th {
+  background: var(--green-deep);
+  color: #fff;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-weight: 500;
+  font-size: 0.82rem;
+}
+.compare-table td {
+  padding: 0.7rem 1rem;
+  border-bottom: 1px solid #f0ede8;
+  color: var(--ink-light);
+  line-height: 1.6;
+}
+.compare-table tr:last-child td { border-bottom: none; }
+.compare-table tr:nth-child(even) td { background: #fafaf7; }
+.compare-table .hl { background: var(--green-soft) !important; color: var(--green-deep); font-weight: 600; }
+
+/* ── NUM GRID ── */
+.num-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.8rem;
+  margin: 1.5rem 0;
+}
+.num-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.2rem;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+.num-big {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--green-deep);
+  line-height: 1.2;
+}
+.num-label {
+  font-size: 0.75rem;
+  color: var(--ink-faint);
+  margin-top: 0.3rem;
+  line-height: 1.4;
+}
+
+/* ── QUIZ ── */
+.quiz-section {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2rem;
+  margin: 2rem 0;
+  box-shadow: var(--shadow);
+}
+.quiz-section-title {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+}
+.quiz-section-sub {
+  font-size: 0.85rem;
+  color: var(--ink-faint);
+  margin-bottom: 1.5rem;
+}
+.quiz-block { margin-bottom: 1.8rem; }
+.quiz-block:last-child { margin-bottom: 0; }
+.quiz-q {
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin-bottom: 0.8rem;
+  padding-left: 2.2rem;
+  position: relative;
+  line-height: 1.6;
+}
+.quiz-q::before {
+  content: attr(data-num);
+  position: absolute;
+  left: 0; top: 0;
+  width: 1.6rem; height: 1.6rem;
+  background: var(--green);
+  color: #fff;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+.quiz-opts { display: flex; flex-direction: column; gap: 0.45rem; padding-left: 2.2rem; }
+.quiz-opt {
+  background: var(--paper);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 0.65rem 1rem;
+  cursor: pointer;
+  font-size: 0.88rem;
+  transition: all 0.25s;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  line-height: 1.5;
+}
+.quiz-opt:hover { border-color: var(--green); background: var(--green-soft); }
+.quiz-opt .marker {
+  width: 20px; height: 20px;
+  border: 2px solid var(--border);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.62rem; font-weight: 700;
+  flex-shrink: 0;
+  transition: all 0.25s;
+  font-family: 'JetBrains Mono', monospace;
+}
+.quiz-opt.correct { border-color: var(--sage); background: var(--sage-soft); }
+.quiz-opt.correct .marker { background: var(--sage); color: #fff; border-color: var(--sage); }
+.quiz-opt.wrong { border-color: var(--coral); background: var(--coral-soft); }
+.quiz-opt.wrong .marker { background: var(--coral); color: #fff; border-color: var(--coral); }
+.quiz-explain {
+  margin-top: 0.6rem;
+  margin-left: 2.2rem;
+  padding: 0.8rem 1rem;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  line-height: 1.7;
+  display: none;
+}
+.quiz-explain.show { display: block; }
+.quiz-explain.ok { background: var(--sage-soft); color: #1b4332; }
+.quiz-explain.no { background: var(--coral-soft); color: #7c2d12; }
+
+/* ── FOOTER ── */
+.page-footer {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--ink-faint);
+  border-top: 1px solid var(--border);
+}
+.page-footer a { color: var(--green); text-decoration: none; }
+
+/* ── SCROLL PROGRESS ── */
+.scroll-progress {
+  position: fixed;
+  top: 0; left: 0;
+  width: 0%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--green-deep), var(--green));
+  z-index: 100;
+  transition: width 0.1s;
+}
+
+/* ── 3D VIEWER ── */
+.viewer-3d {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin: 2rem 0;
+  box-shadow: var(--shadow);
+}
+.viewer-canvas {
+  width: 100%;
+  height: 380px;
+  cursor: grab;
+  display: block;
+}
+.viewer-canvas:active { cursor: grabbing; }
+.viewer-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.8rem 1.2rem;
+  border-top: 1px solid var(--border);
+  background: var(--paper);
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.viewer-label {
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+}
+.viewer-legend {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.legend-dot {
+  width: 10px; height: 10px;
+  border-radius: 3px;
+}
+.viewer-btn {
+  padding: 0.35rem 0.8rem;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  background: var(--card);
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--ink);
+}
+.viewer-btn:hover { border-color: var(--green); background: var(--green-soft); }
+.viewer-btn.active { border-color: var(--green); background: var(--green-soft); color: var(--green-deep); }
+
+@media (max-width: 600px) {
+  .hero { min-height: 45vh; padding: 2rem 1.2rem 2rem; }
+  .content { padding: 1.5rem 1.2rem 3rem; }
+  .story { font-size: 1rem; }
+  .section-title { font-size: 1.25rem; }
+  .num-grid { grid-template-columns: repeat(2, 1fr); }
+  .concept, .quiz-section { padding: 1.4rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<header class="hero">
+  <div class="hero-content">
+    <div class="hero-meta">Week 03 · 2026.04.18 · 가우스 반</div>
+    <h1>트러스 구조</h1>
+    <p class="hero-desc">에펠탑에는 삼각형이 18,000개 넘게 들어 있다. 왜 하필 삼각형일까? 그 답을 알면, 다리·건물·뼈·거미줄까지 모든 것이 다르게 보인다.</p>
+    <div class="hero-chips">
+      <span class="hero-chip">사전학습 교재</span>
+      <span class="hero-chip">약 20분</span>
+      <span class="hero-chip">구조공학 · 수학 · 생체모방</span>
+    </div>
+  </div>
+</header>
+
+<article class="content">
+
+  <div class="reading-info">
+    <span class="reading-dot"></span>
+    <span>읽는 시간 약 20분</span>
+    <span>·</span>
+    <span>스크롤하며 읽어주세요</span>
+  </div>
+
+  <!-- ━━━ INTRO ━━━ -->
+
+  <p class="story first-para">
+    1889년, 프랑스 파리에 이상한 탑이 세워졌다. 높이 324미터. 당시 세계에서 가장 높은 구조물이었다. 그런데 사람들은 이 탑을 싫어했다. "흉물스럽다", "도시를 망친다"고 항의했다. 그 탑의 이름은 <strong>에펠탑</strong>이다.
+  </p>
+
+  <p class="body-text">
+    하지만 130년이 지난 지금, 에펠탑은 세계에서 가장 사랑받는 건축물이 되었다. 그리고 공학자들에게 에펠탑은 단순한 관광지가 아니다. <strong>구조 공학의 교과서</strong>다. 왜냐하면 에펠탑을 자세히 들여다보면, 탑 전체가 하나의 패턴으로 이루어져 있기 때문이다. 바로 <strong>삼각형</strong>이다.
+  </p>
+
+  <div class="funfact">
+    <div class="funfact-icon">🗼</div>
+    <div class="funfact-body">
+      <div class="funfact-title">진짜 이야기</div>
+      <div class="funfact-text">에펠탑에는 <strong>18,038개</strong>의 철 부재와 <strong>250만 개</strong>의 리벳(쇠못)이 사용되었다. 이 부재들이 만드는 패턴을 자세히 보면 전부 삼각형이다. 귀스타브 에펠은 왜 사각형이 아니라 삼각형을 선택했을까? 오늘 그 이유를 알게 된다.</div>
+    </div>
+  </div>
+
+  <!-- ━━━ CHAPTER 1 ━━━ -->
+
+  <div class="section-header">
+    <div class="section-number">Chapter 01</div>
+    <h2 class="section-title">삼각형 vs 사각형 — 직접 해보면 안다</h2>
+  </div>
+
+  <p class="body-text">
+    빨대 4개와 핀으로 사각형을 만든다고 생각해보자. 완성한 뒤 꼭짓점 하나를 손으로 밀면 어떻게 될까? 사각형은 힘없이 <strong>마름모 모양으로 찌그러진다</strong>. 옆으로 쓰러지는 것이다.
+  </p>
+
+  <p class="body-text">
+    이번에는 빨대 3개로 삼각형을 만들어보자. 같은 방식으로 꼭짓점을 밀어본다. 놀랍게도 삼각형은 <strong>꿈쩍도 하지 않는다</strong>. 아무리 세게 밀어도 형태가 변하지 않는다.
+  </p>
+
+  <div class="pause">
+    <div class="pause-label">🤚 잠깐, 여기서 생각!</div>
+    왜 사각형은 찌그러지고 삼각형은 안 찌그러질까? 변의 개수가 하나 차이인데, 왜 이렇게 다를까? 힌트: 사각형의 꼭짓점은 움직일 "여유"가 있지만, 삼각형은 없다.
+  </div>
+
+  <div class="concept">
+    <span class="concept-badge">핵심 개념</span>
+    <h3>강성(Rigidity) — 모양을 유지하는 힘</h3>
+    <p>
+      사각형은 4개의 변과 4개의 꼭짓점이 있다. 꼭짓점이 핀으로 연결되어 있으면, 변의 길이는 그대로지만 <strong>각도가 바뀔 수 있다</strong>. 그래서 찌그러진다. 반면 삼각형은 3개의 변의 길이가 정해지면 <strong>각도가 자동으로 결정</strong>된다. 변의 길이가 바뀌지 않는 한, 모양이 바뀔 수가 없다. 이렇게 형태를 유지하는 성질을 <strong>강성</strong>이라고 한다.
+    </p>
+  </div>
+
+  <div class="mathbox">
+    <div class="mathbox-label">📐 수학으로 이해하기</div>
+    <strong>삼각형 내각의 합은 항상 180°</strong>다. 세 변의 길이가 정해지면 세 각도도 하나로 결정된다. 이것은 수학에서 <strong>"SSS 합동 조건"</strong>이라고 부른다. 세 변(Side-Side-Side)이 같으면 삼각형의 모양은 하나뿐이라는 뜻이다.<br><br>
+    반면 사각형은? 네 변의 길이가 같아도 각도에 따라 정사각형이 될 수도 있고, 납작한 마름모가 될 수도 있다. 모양이 "하나로 결정되지 않는다." 수학적으로 <strong>자유도(degree of freedom)</strong>가 남아 있다는 것이다.
+  </div>
+
+  <p class="body-text">
+    그렇다면 사각형을 튼튼하게 만들 방법은 없을까? 있다. 사각형 안에 <strong>대각선 하나</strong>를 넣으면 된다. 대각선은 사각형을 삼각형 2개로 쪼갠다. 그러면 찌그러지지 않는다. 바로 이것이 <strong>트러스(Truss)</strong>의 기본 원리다.
+  </p>
+
+  <div class="concept">
+    <span class="concept-badge">핵심 개념</span>
+    <h3>트러스(Truss)란?</h3>
+    <p>
+      트러스는 <strong>삼각형을 기본 단위로 연결하여 만든 구조물</strong>이다. 막대(부재)들을 삼각형 패턴으로 연결하면, 가볍으면서도 엄청나게 튼튼한 구조를 만들 수 있다. 에펠탑, 철교, 지붕, 크레인 — 모두 트러스 구조다.
+    </p>
+  </div>
+
+  <!-- ━━━ CHAPTER 2 ━━━ -->
+
+  <div class="section-header">
+    <div class="section-number">Chapter 02</div>
+    <h2 class="section-title">밀기와 당기기 — 인장과 압축</h2>
+  </div>
+
+  <p class="body-text">
+    트러스 구조에서 각 막대는 두 가지 힘 중 하나를 받는다. <strong>당겨지거나(인장)</strong> 아니면 <strong>눌리거나(압축)</strong>. 이 두 가지를 이해하면 구조물이 왜 무너지는지, 어떻게 버티는지 알 수 있다.
+  </p>
+
+  <div class="analogy">
+    <div class="analogy-label">🎯 쉽게 비유하면</div>
+    양쪽에서 밧줄을 잡아당기는 줄다리기를 생각해보자. 밧줄은 양쪽에서 <strong>당겨지고</strong> 있다. 이것이 <strong>인장(Tension)</strong>이다. 이번에는 빈 캔을 양쪽에서 누른다고 생각해보자. 캔은 <strong>눌려서</strong> 찌그러진다. 이것이 <strong>압축(Compression)</strong>이다.
+  </div>
+
+  <p class="body-text">
+    인장과 압축의 가장 큰 차이는 <strong>"뭘로 버티느냐"</strong>다. 인장에 강한 재료와 압축에 강한 재료가 다르다.
+  </p>
+
+  <div class="compare-wrap">
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>구분</th>
+          <th>인장 (당기기)</th>
+          <th>압축 (누르기)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>힘의 방향</strong></td>
+          <td>바깥으로 잡아당김</td>
+          <td>안으로 누름</td>
+        </tr>
+        <tr>
+          <td><strong>강한 재료</strong></td>
+          <td class="hl">강철 와이어, 밧줄, 케이블</td>
+          <td class="hl">돌, 콘크리트, 벽돌</td>
+        </tr>
+        <tr>
+          <td><strong>약한 점</strong></td>
+          <td>끊어질 수 있음</td>
+          <td>좌굴(휨)이 일어남</td>
+        </tr>
+        <tr>
+          <td><strong>일상 예시</strong></td>
+          <td>그네 줄, 현수교 케이블</td>
+          <td>건물 기둥, 다리 교각</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pause">
+    <div class="pause-label">🤚 잠깐, 여기서 생각!</div>
+    위 표에서 "좌굴(휨)"이라는 단어가 나왔다. 긴 자를 세워놓고 위에서 누르면 어떻게 되는가? 자가 옆으로 "휘면서" 꺾인다. 이것이 <strong>좌굴(Buckling)</strong>이다. 길고 얇은 부재는 압축을 받으면 좌굴이 일어나기 쉽다. 그래서 압축을 받는 부재는 짧고 굵게 만드는 것이 좋다.
+  </div>
+
+  <p class="body-text">
+    트러스의 천재적인 점은 여기에 있다. 트러스는 하나의 구조 안에서 인장을 받는 부재와 압축을 받는 부재를 <strong>역할 분담</strong>시킨다. 무거운 짐이 올라오면, 어떤 막대는 당겨지고 어떤 막대는 눌리면서, 전체적으로 힘을 고르게 분산시키는 것이다. 한 부재에 힘이 집중되지 않으니 가벼우면서도 튼튼할 수 있다.
+  </p>
+
+  <div class="funfact">
+    <div class="funfact-icon">🌉</div>
+    <div class="funfact-body">
+      <div class="funfact-title">다리의 비밀</div>
+      <div class="funfact-text">철교를 자세히 보면 트러스 패턴이 보인다. 위쪽 막대는 대부분 <strong>압축</strong>을 받고, 아래쪽 막대는 <strong>인장</strong>을 받는다. 대각선 막대는 위에서 오는 하중을 양쪽 끝으로 전달하는 역할을 한다. 이 역할 분담이 없다면, 다리는 훨씬 무겁고 두껍게 만들어야 한다.</div>
+    </div>
+  </div>
+
+  <!-- ━━━ 3D TRUSS VIEWER ━━━ -->
+
+  <div class="concept">
+    <span class="concept-badge">인터랙티브 3D</span>
+    <h3>트러스 다리를 직접 돌려보자</h3>
+    <p>아래 3D 모델을 마우스로 드래그하면 트러스 다리를 여러 각도에서 볼 수 있다. <strong style="color:#d94f30;">빨간 막대</strong>는 압축(눌리는 힘)을, <strong style="color:#3a86c8;">파란 막대</strong>는 인장(당기는 힘)을 받는 부재다.</p>
+  </div>
+
+  <div class="viewer-3d">
+    <canvas class="viewer-canvas" id="trussCanvas"></canvas>
+    <div class="viewer-controls">
+      <span class="viewer-label">마우스 드래그: 회전 · 스크롤: 확대/축소</span>
+      <div class="viewer-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#d94f30;"></div> 압축</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#3a86c8;"></div> 인장</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#666;"></div> 절점</div>
+      </div>
+      <button class="viewer-btn" id="resetBtn" onclick="resetCamera()">↺ 시점 초기화</button>
+    </div>
+  </div>
+
+  <!-- ━━━ CHAPTER 3 ━━━ -->
+
+  <div class="section-header">
+    <div class="section-number">Chapter 03</div>
+    <h2 class="section-title">트러스의 종류 — 같은 원리, 다른 모양</h2>
+  </div>
+
+  <p class="body-text">
+    "삼각형을 이어 붙인다"는 기본 원리는 같지만, 어떻게 이어 붙이느냐에 따라 다양한 트러스가 만들어진다. 역사적으로 유명한 트러스들을 살펴보자.
+  </p>
+
+  <div class="compare-wrap">
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>이름</th>
+          <th>특징</th>
+          <th>사용처</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>워런 트러스</strong></td>
+          <td>대각선이 지그재그 (V자 반복)</td>
+          <td class="hl">현대 철교, 고속도로 다리</td>
+        </tr>
+        <tr>
+          <td><strong>프랫 트러스</strong></td>
+          <td>수직 부재 + 대각선이 바깥으로 기울어짐</td>
+          <td class="hl">철도 다리, 건물 지붕</td>
+        </tr>
+        <tr>
+          <td><strong>하우 트러스</strong></td>
+          <td>대각선이 안쪽으로 기울어짐</td>
+          <td class="hl">19세기 목조 다리</td>
+        </tr>
+        <tr>
+          <td><strong>K 트러스</strong></td>
+          <td>대각선이 K자 모양</td>
+          <td class="hl">높은 타워, 송전탑</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="body-text">
+    모양은 달라도 원리는 같다. 전부 <strong>삼각형의 강성</strong>을 이용한다. 그리고 각 트러스의 대각선 방향에 따라 인장과 압축을 받는 부재의 위치가 달라진다. 공학자들은 구조물의 용도, 하중의 크기, 사용할 재료에 따라 가장 적합한 트러스를 선택한다.
+  </p>
+
+  <div class="mathbox">
+    <div class="mathbox-label">📐 수학으로 이해하기: 트러스의 안정 조건</div>
+    트러스가 안정적으로 서 있으려면 부재(막대)의 수가 충분해야 한다. 이를 계산하는 공식이 있다.<br><br>
+    <strong>m = 2n - 3</strong><br><br>
+    여기서 m은 부재(막대)의 수, n은 절점(꼭짓점)의 수다.<br><br>
+    예를 들어 삼각형은 절점 3개, 부재 3개다. 2×3 - 3 = 3. 딱 맞는다! 이것은 <strong>"정정 트러스"</strong>라고 해서, 부재가 딱 필요한 만큼만 있는 가장 효율적인 구조다.<br><br>
+    만약 m < 2n - 3이면? 부재가 부족해서 <strong>불안정</strong>하다 (찌그러진다).<br>
+    만약 m > 2n - 3이면? 부재가 남아서 <strong>과잉 구속</strong>이다 (무겁지만 더 튼튼하다).
+  </div>
+
+  <!-- ━━━ CHAPTER 4 ━━━ -->
+
+  <div class="section-header">
+    <div class="section-number">Chapter 04</div>
+    <h2 class="section-title">자연이 먼저 발명한 트러스</h2>
+  </div>
+
+  <p class="body-text">
+    인간이 트러스 구조를 발명한 것은 약 200년 전이다. 하지만 자연은 수억 년 전부터 트러스를 써왔다. 자연의 구조물을 자세히 들여다보면, 같은 원리가 숨어 있다.
+  </p>
+
+  <div class="section-header" style="margin-top:1.5rem; padding-top:0; border-top:none;">
+    <div class="section-number">Case 01</div>
+    <h2 class="section-title" style="font-size:1.2rem;">뼈 — 가볍고 튼튼한 천연 트러스</h2>
+  </div>
+
+  <p class="body-text">
+    우리 뼈의 겉은 단단한 껍질(피질골)로 되어 있고, 안쪽은 <strong>스펀지처럼 구멍이 뚫린 구조(해면골)</strong>로 되어 있다. 이 해면골을 현미경으로 보면, 아주 작은 막대들이 <strong>삼각형 패턴</strong>으로 연결되어 있다!
+  </p>
+
+  <p class="body-text">
+    왜 뼈가 속이 비어 있을까? 무게를 줄이기 위해서다. 만약 뼈가 꽉 찬 금속 덩어리였다면, 인간은 너무 무거워서 걷지도 못했을 것이다. 뼈는 <strong>힘이 전달되는 경로에만 재료를 배치</strong>해서, 최소한의 무게로 최대한의 강도를 얻는다. 이것은 트러스 구조의 원리와 정확히 같다.
+  </p>
+
+  <div class="funfact">
+    <div class="funfact-icon">🦴</div>
+    <div class="funfact-body">
+      <div class="funfact-title">볼프의 법칙</div>
+      <div class="funfact-text">19세기 독일 의사 율리우스 볼프는 뼈가 <strong>받는 힘의 방향에 따라 내부 구조를 바꾼다</strong>는 것을 발견했다. 운동을 많이 하면 뼈 내부의 삼각형 패턴이 더 촘촘해진다. 뼈는 살아 있는 트러스인 셈이다.</div>
+    </div>
+  </div>
+
+  <div class="section-header" style="margin-top:1.5rem; padding-top:0; border-top:none;">
+    <div class="section-number">Case 02</div>
+    <h2 class="section-title" style="font-size:1.2rem;">거미줄 — 강철보다 강한 자연의 케이블</h2>
+  </div>
+
+  <p class="body-text">
+    거미줄은 같은 무게의 강철보다 <strong>5배</strong>나 강하다. 거미줄의 구조를 보면, 방사형 줄(중심에서 바깥으로)과 나선형 줄(둥글게 돌아가는)이 교차하면서 수많은 <strong>삼각형</strong>을 만든다.
+  </p>
+
+  <p class="body-text">
+    방사형 줄은 주로 <strong>인장</strong>(먹이가 걸리면 당겨지는 힘)을 받고, 나선형 줄은 힘을 고르게 분산시킨다. 트러스에서 부재마다 역할을 나누는 것과 같은 원리다. 게다가 거미줄은 끊어져도 전체 구조가 무너지지 않는다. 한 부분이 망가져도 나머지가 버티는 <strong>"손상 허용 설계"</strong>까지 되어 있다.
+  </p>
+
+  <div class="section-header" style="margin-top:1.5rem; padding-top:0; border-top:none;">
+    <div class="section-number">Case 03</div>
+    <h2 class="section-title" style="font-size:1.2rem;">벌집 — 가장 효율적인 공간 채우기</h2>
+  </div>
+
+  <p class="body-text">
+    벌집은 정육각형이 빈틈없이 이어진 구조다. 정육각형은 대각선을 그으면 <strong>6개의 정삼각형</strong>으로 나뉜다. 벌집이 그렇게 가벼우면서도 꿀의 무게를 버틸 수 있는 이유가 여기에 있다. 벌집 구조(허니컴 구조)는 비행기 날개, 인공위성 패널, 스키 보드 등에 활용되고 있다.
+  </p>
+
+  <div class="keypoint">
+    <div class="keypoint-label">💡 생체모방공학이란?</div>
+    자연의 구조와 원리를 배워서 인간의 기술에 적용하는 것을 <strong>생체모방공학(Biomimetics)</strong>이라고 한다. 뼈의 해면골 구조를 본떠 가벼운 건축 재료를 만들고, 거미줄의 원리를 본떠 방탄 섬유를 개발하고, 벌집 구조를 본떠 비행기 부품을 만든다. 자연은 수억 년간의 시행착오를 거쳐 최적의 구조를 찾아냈고, 인간은 그것을 배우고 있다.
+  </div>
+
+  <!-- ━━━ SUMMARY ━━━ -->
+
+  <div class="section-header">
+    <div class="section-number">정리</div>
+    <h2 class="section-title">한눈에 보는 트러스의 핵심</h2>
+  </div>
+
+  <div class="compare-wrap">
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th style="width:25%">개념</th>
+          <th>설명</th>
+          <th style="width:30%">핵심 한 줄</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>강성</strong></td>
+          <td>삼각형은 변의 길이가 정해지면 각도가 결정됨</td>
+          <td class="hl">삼각형은 찌그러지지 않는다</td>
+        </tr>
+        <tr>
+          <td><strong>트러스</strong></td>
+          <td>삼각형을 이어 붙여 만든 경량 고강도 구조</td>
+          <td class="hl">가볍고 + 튼튼하고 = 효율적</td>
+        </tr>
+        <tr>
+          <td><strong>인장 / 압축</strong></td>
+          <td>당기는 힘과 누르는 힘, 부재마다 역할 분담</td>
+          <td class="hl">힘을 나누면 버틸 수 있다</td>
+        </tr>
+        <tr>
+          <td><strong>좌굴</strong></td>
+          <td>길고 얇은 부재가 압축받으면 옆으로 휘는 현상</td>
+          <td class="hl">짧고 굵게 만들어 방지</td>
+        </tr>
+        <tr>
+          <td><strong>생체모방</strong></td>
+          <td>자연의 구조(뼈, 거미줄, 벌집)를 기술에 적용</td>
+          <td class="hl">자연이 최고의 공학자다</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="num-grid">
+    <div class="num-card">
+      <div class="num-big">180°</div>
+      <div class="num-label">삼각형<br>내각의 합</div>
+    </div>
+    <div class="num-card">
+      <div class="num-big">18,038</div>
+      <div class="num-label">에펠탑의<br>철 부재 수</div>
+    </div>
+    <div class="num-card">
+      <div class="num-big">×5</div>
+      <div class="num-label">거미줄은 강철보다<br>5배 강하다</div>
+    </div>
+    <div class="num-card">
+      <div class="num-big">m=2n-3</div>
+      <div class="num-label">트러스<br>안정 조건식</div>
+    </div>
+  </div>
+
+  <!-- ━━━ PREVIEW ━━━ -->
+
+  <div class="section-header">
+    <div class="section-number">다음 수업 미리보기</div>
+    <h2 class="section-title">수업에서는 무엇을 할까?</h2>
+  </div>
+
+  <p class="body-text">
+    여기까지가 사전학습이다. 수업에서는 이 개념들을 바탕으로 실제 트러스 구조를 만들어보고, 어떤 트러스가 가장 무거운 하중을 버티는지 실험하게 된다. 아래 세 가지를 미리 생각해오면 수업이 훨씬 재밌을 것이다.
+  </p>
+
+  <div class="concept">
+    <span class="concept-badge">수업 전 생각거리</span>
+    <h3>이것만 생각해오면 된다</h3>
+    <p>
+      ❶ 학교 주변에서 삼각형 패턴이 보이는 구조물을 찾아보자. (지붕, 다리, 전망대, 철탑 등)<br><br>
+      ❷ 트러스 구조가 아닌 건물은 어떻게 버티고 있을까? (힌트: 벽, 기둥, 아치)<br><br>
+      ❸ 만약 삼각형이 아닌 오각형으로 트러스를 만든다면 어떻게 될까?
+    </p>
+  </div>
+
+  <!-- ━━━ QUIZ ━━━ -->
+
+  <div class="section-header">
+    <div class="section-number">확인 퀴즈</div>
+    <h2 class="section-title">잘 읽었는지 확인해보자</h2>
+  </div>
+
+  <div class="quiz-section">
+    <div class="quiz-section-title">3문제만 풀어보자</div>
+    <div class="quiz-section-sub">답을 클릭하면 바로 정답과 해설을 볼 수 있다.</div>
+
+    <div class="quiz-block" id="q1">
+      <div class="quiz-q" data-num="1">사각형은 찌그러지는데 삼각형은 찌그러지지 않는 근본적인 이유는?</div>
+      <div class="quiz-opts">
+        <div class="quiz-opt" onclick="answer('q1',this,false)">
+          <span class="marker">A</span>
+          <span>삼각형이 더 작기 때문에</span>
+        </div>
+        <div class="quiz-opt" onclick="answer('q1',this,true)">
+          <span class="marker">B</span>
+          <span>세 변의 길이가 정해지면 각도가 자동으로 결정되기 때문에</span>
+        </div>
+        <div class="quiz-opt" onclick="answer('q1',this,false)">
+          <span class="marker">C</span>
+          <span>삼각형의 재료가 더 단단하기 때문에</span>
+        </div>
+        <div class="quiz-opt" onclick="answer('q1',this,false)">
+          <span class="marker">D</span>
+          <span>삼각형은 꼭짓점이 적어서</span>
+        </div>
+      </div>
+      <div class="quiz-explain" id="q1-fb"></div>
+    </div>
+
+    <div class="quiz-block" id="q2">
+      <div class="quiz-q" data-num="2">긴 자를 세워놓고 위에서 누르면 옆으로 휘어진다. 이 현상의 이름은?</div>
+      <div class="quiz-opts">
+        <div class="quiz-opt" onclick="answer('q2',this,false)">
+          <span class="marker">A</span>
+          <span>인장</span>
+        </div>
+        <div class="quiz-opt" onclick="answer('q2',this,false)">
+          <span class="marker">B</span>
+          <span>강성</span>
+        </div>
+        <div class="quiz-opt" onclick="answer('q2',this,true)">
+          <span class="marker">C</span>
+          <span>좌굴</span>
+        </div>
+        <div class="quiz-opt" onclick="answer('q2',this,false)">
+          <span class="marker">D</span>
+          <span>트러스</span>
+        </div>
+      </div>
+      <div class="quiz-explain" id="q2-fb"></div>
+    </div>
+
+    <div class="quiz-block" id="q3">
+      <div class="quiz-q" data-num="3">뼈의 내부가 스펀지처럼 구멍이 뚫린 구조인 이유는?</div>
+      <div class="quiz-opts">
+        <div class="quiz-opt" onclick="answer('q3',this,false)">
+          <span class="marker">A</span>
+          <span>혈관이 지나가기 위해서</span>
+        </div>
+        <div class="quiz-opt" onclick="answer('q3',this,false)">
+          <span class="marker">B</span>
+          <span>뼈가 만들어지다 만 것이다</span>
+        </div>
+        <div class="quiz-opt" onclick="answer('q3',this,true)">
+          <span class="marker">C</span>
+          <span>최소한의 무게로 최대한의 강도를 얻기 위해</span>
+        </div>
+        <div class="quiz-opt" onclick="answer('q3',this,false)">
+          <span class="marker">D</span>
+          <span>뼈가 유연하게 구부러지기 위해</span>
+        </div>
+      </div>
+      <div class="quiz-explain" id="q3-fb"></div>
+    </div>
+  </div>
+
+</article>
+
+<footer class="page-footer">
+  2026 수·과융합영재원 가우스 반 · Week 03 of 21<br>
+  <a href="./">← 전체 커리큘럼</a> · <a href="week-04.html">다음: 센서와 데이터로 움직임을 설계하다 →</a>
+</footer>
+
+<script>
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+  document.getElementById('scrollProgress').style.width = pct + '%';
+});
+
+const done = {};
+const fb = {
+  q1: {
+    ok: '정답! 삼각형은 세 변의 길이가 정해지면 각도가 자동으로 결정된다 (SSS 합동 조건). 그래서 변이 변형되지 않는 한 모양이 바뀔 수 없다. 이것이 강성(rigidity)이다.',
+    no: '아쉽다! 정답은 B번이다. 핵심은 수학에 있다. 삼각형은 세 변의 길이가 정해지면 각도까지 하나로 결정되기 때문에 (SSS 합동 조건), 힘을 받아도 모양이 바뀔 수 없다.'
+  },
+  q2: {
+    ok: '정답! 좌굴(Buckling)은 길고 얇은 부재가 압축력을 받을 때 옆으로 휘어지는 현상이다. 트러스에서 압축을 받는 부재는 좌굴을 방지하기 위해 짧고 굵게 설계한다.',
+    no: '아쉽다! 정답은 C번, 좌굴이다. 좌굴은 길고 얇은 부재를 위에서 눌렀을 때 옆으로 휘어지는 현상이다. 인장은 당기는 힘, 강성은 형태 유지 능력, 트러스는 구조물의 종류다.'
+  },
+  q3: {
+    ok: '정답! 뼈는 힘이 전달되는 경로에만 재료를 배치하는 트러스 원리를 사용한다. 최소한의 무게로 최대한의 강도를 얻는 자연의 설계다. 이것을 생체모방공학에서 배워 건축 재료에 응용하고 있다.',
+    no: '아쉽다! 정답은 C번이다. 뼈 내부의 해면골은 트러스처럼 힘이 전달되는 경로에만 재료를 배치해서, 최소 무게로 최대 강도를 얻는 구조다.'
+  }
+};
+
+function answer(qid, el, correct) {
+  if (done[qid]) return;
+  done[qid] = true;
+  const block = document.getElementById(qid);
+  block.querySelectorAll('.quiz-opt').forEach(o => o.style.pointerEvents = 'none');
+  const explain = document.getElementById(qid + '-fb');
+  if (correct) {
+    el.classList.add('correct');
+    explain.className = 'quiz-explain show ok';
+    explain.textContent = '✅ ' + fb[qid].ok;
+  } else {
+    el.classList.add('wrong');
+    block.querySelectorAll('.quiz-opt').forEach(o => {
+      if (o.getAttribute('onclick').includes('true')) o.classList.add('correct');
+    });
+    explain.className = 'quiz-explain show no';
+    explain.textContent = '❌ ' + fb[qid].no;
+  }
+}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function() {
+  const canvas = document.getElementById('trussCanvas');
+  if (!canvas) return;
+  
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(45, 2, 0.1, 100);
+  camera.position.set(0, 3, 12);
+  camera.lookAt(0, 0, 0);
+  
+  // Lights
+  scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+  const dirLight = new THREE.DirectionalLight(0xffffff, 0.7);
+  dirLight.position.set(5, 8, 6);
+  scene.add(dirLight);
+  const backLight = new THREE.DirectionalLight(0xffffff, 0.3);
+  backLight.position.set(-3, 4, -4);
+  scene.add(backLight);
+  
+  // Materials
+  const matComp = new THREE.MeshStandardMaterial({ color: 0xd94f30, roughness: 0.4, metalness: 0.3 });
+  const matTens = new THREE.MeshStandardMaterial({ color: 0x3a86c8, roughness: 0.4, metalness: 0.3 });
+  const matVert = new THREE.MeshStandardMaterial({ color: 0x888888, roughness: 0.5, metalness: 0.2 });
+  const matJoint = new THREE.MeshStandardMaterial({ color: 0x555555, roughness: 0.3, metalness: 0.5 });
+  
+  const truss = new THREE.Group();
+  
+  // Helper: create a beam between two points
+  function beam(p1, p2, mat, radius) {
+    radius = radius || 0.06;
+    const dir = new THREE.Vector3().subVectors(p2, p1);
+    const len = dir.length();
+    const geo = new THREE.CylinderGeometry(radius, radius, len, 8);
+    geo.translate(0, len / 2, 0);
+    geo.rotateX(Math.PI / 2);
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.position.copy(p1);
+    mesh.lookAt(p2);
+    truss.add(mesh);
+  }
+  
+  // Helper: create joint sphere
+  function joint(p) {
+    const geo = new THREE.SphereGeometry(0.12, 12, 12);
+    const mesh = new THREE.Mesh(geo, matJoint);
+    mesh.position.copy(p);
+    truss.add(mesh);
+  }
+  
+  // Warren Truss Bridge
+  const span = 5;
+  const panels = 6;
+  const h = 1.2;
+  const dx = span / panels;
+  
+  const bottomNodes = [];
+  const topNodes = [];
+  
+  for (let i = 0; i <= panels; i++) {
+    const x = -span / 2 + i * dx;
+    bottomNodes.push(new THREE.Vector3(x, -h / 2, 0));
+    topNodes.push(new THREE.Vector3(x, h / 2, 0));
+  }
+  
+  // Bottom chord (tension - blue)
+  for (let i = 0; i < panels; i++) {
+    beam(bottomNodes[i], bottomNodes[i + 1], matTens, 0.07);
+  }
+  
+  // Top chord (compression - red)
+  for (let i = 0; i < panels; i++) {
+    beam(topNodes[i], topNodes[i + 1], matComp, 0.07);
+  }
+  
+  // Verticals (gray)
+  for (let i = 0; i <= panels; i++) {
+    beam(bottomNodes[i], topNodes[i], matVert, 0.05);
+  }
+  
+  // Diagonals (Warren pattern - alternating)
+  for (let i = 0; i < panels; i++) {
+    if (i % 2 === 0) {
+      beam(bottomNodes[i], topNodes[i + 1], matTens, 0.055);
+    } else {
+      beam(topNodes[i], bottomNodes[i + 1], matComp, 0.055);
+    }
+  }
+  
+  // Depth members (make it 3D - z-axis)
+  const depth = 1.5;
+  const bottomBack = [];
+  const topBack = [];
+  
+  for (let i = 0; i <= panels; i++) {
+    const x = -span / 2 + i * dx;
+    bottomBack.push(new THREE.Vector3(x, -h / 2, -depth));
+    topBack.push(new THREE.Vector3(x, h / 2, -depth));
+  }
+  
+  // Back face
+  for (let i = 0; i < panels; i++) {
+    beam(bottomBack[i], bottomBack[i + 1], matTens, 0.07);
+    beam(topBack[i], topBack[i + 1], matComp, 0.07);
+  }
+  for (let i = 0; i <= panels; i++) {
+    beam(bottomBack[i], topBack[i], matVert, 0.05);
+  }
+  for (let i = 0; i < panels; i++) {
+    if (i % 2 === 0) {
+      beam(bottomBack[i], topBack[i + 1], matTens, 0.055);
+    } else {
+      beam(topBack[i], bottomBack[i + 1], matComp, 0.055);
+    }
+  }
+  
+  // Cross bracing (connecting front and back)
+  for (let i = 0; i <= panels; i++) {
+    beam(bottomNodes[i], bottomBack[i], matVert, 0.04);
+    beam(topNodes[i], topBack[i], matVert, 0.04);
+  }
+  // Top cross bracing
+  for (let i = 0; i < panels; i += 2) {
+    beam(topNodes[i], topBack[i + 1], matVert, 0.035);
+    beam(topBack[i], topNodes[i + 1], matVert, 0.035);
+  }
+  
+  // Joints
+  for (let i = 0; i <= panels; i++) {
+    joint(bottomNodes[i]);
+    joint(topNodes[i]);
+    joint(bottomBack[i]);
+    joint(topBack[i]);
+  }
+  
+  // Road deck (simple plane)
+  const deckGeo = new THREE.BoxGeometry(span + 0.3, 0.08, depth + 0.2);
+  const deckMat = new THREE.MeshStandardMaterial({ color: 0xc4b69c, roughness: 0.8 });
+  const deck = new THREE.Mesh(deckGeo, deckMat);
+  deck.position.set(0, -h / 2 - 0.06, -depth / 2);
+  truss.add(deck);
+  
+  // Center the truss
+  truss.position.set(0, 0.3, depth / 2);
+  scene.add(truss);
+  
+  // Mouse rotation
+  let isDragging = false;
+  let prevX = 0, prevY = 0;
+  let rotY = 0.3, rotX = 0.2;
+  
+  canvas.addEventListener('mousedown', e => { isDragging = true; prevX = e.clientX; prevY = e.clientY; });
+  canvas.addEventListener('touchstart', e => { isDragging = true; prevX = e.touches[0].clientX; prevY = e.touches[0].clientY; }, { passive: true });
+  
+  window.addEventListener('mouseup', () => isDragging = false);
+  window.addEventListener('touchend', () => isDragging = false);
+  
+  canvas.addEventListener('mousemove', e => {
+    if (!isDragging) return;
+    rotY += (e.clientX - prevX) * 0.008;
+    rotX += (e.clientY - prevY) * 0.006;
+    rotX = Math.max(-1.2, Math.min(1.2, rotX));
+    prevX = e.clientX; prevY = e.clientY;
+  });
+  canvas.addEventListener('touchmove', e => {
+    if (!isDragging) return;
+    rotY += (e.touches[0].clientX - prevX) * 0.008;
+    rotX += (e.touches[0].clientY - prevY) * 0.006;
+    rotX = Math.max(-1.2, Math.min(1.2, rotX));
+    prevX = e.touches[0].clientX; prevY = e.touches[0].clientY;
+  }, { passive: true });
+  
+  // Zoom
+  let camDist = 12;
+  canvas.addEventListener('wheel', e => {
+    e.preventDefault();
+    camDist += e.deltaY * 0.01;
+    camDist = Math.max(6, Math.min(22, camDist));
+  }, { passive: false });
+  
+  // Reset
+  window.resetCamera = function() {
+    rotY = 0.3; rotX = 0.2; camDist = 12;
+  };
+  
+  // Auto rotation
+  let autoRotate = true;
+  canvas.addEventListener('mousedown', () => autoRotate = false);
+  canvas.addEventListener('touchstart', () => autoRotate = false);
+  
+  // Resize
+  function resize() {
+    const rect = canvas.getBoundingClientRect();
+    const w = rect.width;
+    const h = rect.height;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  }
+  resize();
+  window.addEventListener('resize', resize);
+  
+  // Animate
+  function animate() {
+    requestAnimationFrame(animate);
+    if (autoRotate) rotY += 0.003;
+    camera.position.x = Math.sin(rotY) * Math.cos(rotX) * camDist;
+    camera.position.y = Math.sin(rotX) * camDist * 0.5 + 1;
+    camera.position.z = Math.cos(rotY) * Math.cos(rotX) * camDist;
+    camera.lookAt(0, 0, 0);
+    renderer.render(scene, camera);
+  }
+  animate();
+})();
+</script>
+</body>
+</html>
