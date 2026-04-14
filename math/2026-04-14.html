@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>틀린 문제 완전정복 — 소인수분해·GCD·LCM</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/pretendard/1.3.9/variable/pretendardvariable.min.css" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FDFAF5;
+    --text: #2B2520;
+    --accent: #E8652B;
+    --accent-light: #FFF0E8;
+    --concept-bg: #EFF6FF;
+    --concept-border: #3B82F6;
+    --solution-bg: #F0FDF4;
+    --solution-border: #22C55E;
+    --trap-bg: #FEF2F2;
+    --trap-border: #EF4444;
+    --principle-bg: #FDF4FF;
+    --principle-border: #A855F7;
+    --card-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    --font: 'Pretendard Variable', -apple-system, sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    font-size: 17px;
+    padding-bottom: 80px;
+  }
+
+  /* Hero */
+  .hero {
+    background: linear-gradient(135deg, #1E3A5F 0%, #2D5A87 50%, #3B7CB8 100%);
+    color: white;
+    padding: 48px 24px 56px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0; right: 0;
+    height: 32px;
+    background: var(--bg);
+    border-radius: 32px 32px 0 0;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 24px;
+    padding: 6px 18px;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+  .hero h1 {
+    font-size: 28px;
+    font-weight: 800;
+    line-height: 1.3;
+    margin-bottom: 8px;
+  }
+  .hero p {
+    font-size: 15px;
+    opacity: 0.85;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+
+  /* Container */
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  /* Navigation TOC */
+  .toc {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    margin: 32px auto;
+    box-shadow: var(--card-shadow);
+    border: 1px solid #E8E4DF;
+  }
+  .toc h2 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .toc-list {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .toc-list a {
+    display: inline-block;
+    background: var(--accent-light);
+    color: var(--accent);
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+  }
+  .toc-list a:hover {
+    background: var(--accent);
+    color: white;
+    transform: translateY(-1px);
+  }
+
+  /* Problem Section */
+  .problem-section {
+    background: white;
+    border-radius: 20px;
+    padding: 32px 28px;
+    margin: 28px auto;
+    box-shadow: var(--card-shadow);
+    border: 1px solid #E8E4DF;
+    position: relative;
+    overflow: hidden;
+  }
+  .problem-section::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent), #F59E0B);
+  }
+
+  .problem-number {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--accent);
+    color: white;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+  }
+
+  .problem-text {
+    background: #F8F6F3;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 24px;
+    font-size: 16px;
+    line-height: 1.9;
+    border-left: 4px solid #CBD5E1;
+  }
+  .problem-text .cond {
+    background: #E2E8F0;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-top: 10px;
+  }
+
+  /* Concept Box */
+  .concept-box {
+    background: var(--concept-bg);
+    border: 1px solid var(--concept-border);
+    border-left: 5px solid var(--concept-border);
+    border-radius: 12px;
+    padding: 20px 22px;
+    margin-bottom: 20px;
+  }
+  .concept-box h3 {
+    color: var(--concept-border);
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .concept-box p, .concept-box ul {
+    font-size: 15px;
+    color: #1E40AF;
+  }
+  .concept-box ul {
+    padding-left: 20px;
+    margin-top: 8px;
+  }
+  .concept-box li {
+    margin-bottom: 4px;
+  }
+
+  /* Solution Steps */
+  .solution-box {
+    background: var(--solution-bg);
+    border: 1px solid var(--solution-border);
+    border-left: 5px solid var(--solution-border);
+    border-radius: 12px;
+    padding: 20px 22px;
+    margin-bottom: 20px;
+  }
+  .solution-box h3 {
+    color: #15803D;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .step {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+    align-items: flex-start;
+  }
+  .step:last-child { margin-bottom: 0; }
+  .step-num {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #22C55E;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    margin-top: 2px;
+  }
+  .step-content {
+    flex: 1;
+    font-size: 15px;
+  }
+  .step-content .math {
+    display: block;
+    background: white;
+    border-radius: 8px;
+    padding: 8px 14px;
+    margin: 6px 0;
+    font-family: 'Georgia', serif;
+    font-size: 16px;
+    border: 1px solid #D1FAE5;
+    overflow-x: auto;
+  }
+
+  /* Trap / Error Box */
+  .trap-box {
+    background: var(--trap-bg);
+    border: 1px solid var(--trap-border);
+    border-left: 5px solid var(--trap-border);
+    border-radius: 12px;
+    padding: 20px 22px;
+    margin-bottom: 20px;
+  }
+  .trap-box h3 {
+    color: #DC2626;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .trap-box p {
+    font-size: 15px;
+    color: #991B1B;
+  }
+
+  /* Answer highlight */
+  .answer {
+    display: inline-block;
+    background: linear-gradient(135deg, #F59E0B, #EF4444);
+    color: white;
+    font-weight: 800;
+    padding: 6px 18px;
+    border-radius: 8px;
+    font-size: 18px;
+    margin-top: 8px;
+  }
+
+  /* Principle summary section */
+  .principle-section {
+    background: linear-gradient(135deg, #FAF5FF, #FDF2F8);
+    border: 2px solid var(--principle-border);
+    border-radius: 20px;
+    padding: 32px 28px;
+    margin: 40px auto 28px;
+    position: relative;
+  }
+  .principle-section h2 {
+    color: var(--principle-border);
+    font-size: 22px;
+    font-weight: 800;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  .principle-card {
+    background: white;
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 16px;
+    border: 1px solid #E9D5FF;
+    box-shadow: 0 2px 8px rgba(168,85,247,0.08);
+  }
+  .principle-card:last-child { margin-bottom: 0; }
+  .principle-card h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #7C3AED;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .principle-card p {
+    font-size: 15px;
+    color: #4C1D95;
+    line-height: 1.7;
+  }
+  .principle-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: var(--principle-border);
+    color: white;
+    font-size: 13px;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+
+  /* Interactive toggle */
+  details {
+    margin-top: 10px;
+  }
+  details summary {
+    cursor: pointer;
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 14px;
+    padding: 6px 0;
+    user-select: none;
+  }
+  details summary:hover { text-decoration: underline; }
+  details[open] summary { margin-bottom: 8px; }
+
+  /* Section divider */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #D1D5DB, transparent);
+    margin: 20px 0;
+  }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    .hero { padding: 36px 16px 44px; }
+    .hero h1 { font-size: 22px; }
+    .problem-section { padding: 24px 18px; }
+    .toc-list a { font-size: 12px; padding: 6px 12px; }
+    body { font-size: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div style="font-size:13px;opacity:0.5;margin-bottom:12px;max-width:720px;margin-left:auto;margin-right:auto"><a href="../index.html" style="color:inherit;text-decoration:none">가우스 반</a> › <a href="index.html" style="color:inherit;text-decoration:none">수학 연습장</a> › 2026.4.14</div>
+  <div class="hero-badge">Xistory 중등수학 1-1 · 소인수분해 단원</div>
+  <h1>틀린 문제 완전정복 💡</h1>
+  <p>왜 틀렸는지 이해하면, 다음엔 절대 안 틀려!</p>
+</div>
+
+<div class="container">
+
+  <!-- TOC -->
+  <nav class="toc">
+    <h2>📋 오늘 복습할 문제들</h2>
+    <ul class="toc-list">
+      <li><a href="#b81">B81 — 최소공배수 → 공약수</a></li>
+      <li><a href="#b82">B82 — GCD 조건+세 자리 수</a></li>
+      <li><a href="#b87">B87 — 공약수 개수 조건</a></li>
+      <li><a href="#b89">B89 — 나머지 같은 나눗셈</a></li>
+      <li><a href="#b90">B90 — "부족하다" 해석</a></li>
+      <li><a href="#b91">B91 — GCD + 배수 조건</a></li>
+      <li><a href="#b93">B93 — 나머지 패턴 발견</a></li>
+      <li><a href="#b94">B94 — LCM = 360 조건</a></li>
+    </ul>
+  </nav>
+
+  <!-- ============ B81 ============ -->
+  <section class="problem-section" id="b81">
+    <div class="problem-number">B81 ★ 서술형</div>
+    <div class="problem-text">
+      18과 60의 <strong>최소공배수</strong>를 <em>a</em>, 28과 350의 <strong>최소공배수</strong>를 <em>b</em>라 할 때, <em>a</em>, <em>b</em>의 <strong>공약수의 개수</strong>를 구하는 과정을 서술하시오.
+    </div>
+
+    <div class="concept-box">
+      <h3>💡 먼저 알아야 할 개념</h3>
+      <p><strong>최대공약수(GCD)</strong>와 <strong>최소공배수(LCM)</strong>는 완전히 다른 것이야!</p>
+      <ul>
+        <li><strong>최대공약수(GCD)</strong> = 공통으로 나눌 수 있는 수 중 <em>가장 큰 것</em> → 소인수 분해 후 <strong>공통 부분</strong>에서 <strong>작은 지수</strong>를 골라</li>
+        <li><strong>최소공배수(LCM)</strong> = 두 수의 배수 중 <em>가장 작은 것</em> → 소인수 분해 후 <strong>모든 소인수</strong>에서 <strong>큰 지수</strong>를 골라</li>
+      </ul>
+      <p style="margin-top:10px">그리고 <strong>"공약수의 개수"</strong>를 구하려면? → 먼저 최대공약수를 구하고, 그 <strong>약수의 개수</strong>를 세면 돼!</p>
+    </div>
+
+    <div class="trap-box">
+      <h3>⚠️ 네가 틀린 이유</h3>
+      <p>최소공배수(LCM)를 구해야 하는데 최대공약수(GCD)를 구했어! a=6, b=14로 적었는데, 이건 GCD야. LCM은 훨씬 큰 수가 나와.</p>
+    </div>
+
+    <div class="solution-box">
+      <h3>✅ 풀이</h3>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <strong>소인수분해부터!</strong>
+          <div class="math">18 = 2 × 3² &nbsp;&nbsp;|&nbsp;&nbsp; 60 = 2² × 3 × 5</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <strong>a = LCM(18, 60)</strong> → 모든 소인수에서 큰 지수 선택!
+          <div class="math">a = 2² × 3² × 5 = <strong>180</strong></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <strong>소인수분해!</strong>
+          <div class="math">28 = 2² × 7 &nbsp;&nbsp;|&nbsp;&nbsp; 350 = 2 × 5² × 7</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <strong>b = LCM(28, 350)</strong> → 역시 큰 지수 선택!
+          <div class="math">b = 2² × 5² × 7 = <strong>700</strong></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <strong>a, b의 공약수 개수</strong> = GCD(180, 700)의 약수 개수
+          <div class="math">180 = 2² × 3² × 5 &nbsp;&nbsp;|&nbsp;&nbsp; 700 = 2² × 5² × 7</div>
+          <div class="math">GCD(180, 700) = 2² × 5 = 20</div>
+          <div class="math">20 = 2² × 5 → 약수 개수 = (2+1)(1+1) = <strong>6개</strong></div>
+        </div>
+      </div>
+
+      <div class="answer">정답: 6개</div>
+    </div>
+  </section>
+
+  <!-- ============ B82 ============ -->
+  <section class="problem-section" id="b82">
+    <div class="problem-number">B82 ★★ 서술형</div>
+    <div class="problem-text">
+      60과 <strong>세 자리</strong> 자연수 A의 최대공약수가 12일 때, A의 값 중에서 <strong>가장 작은 값</strong>을 구하는 과정을 서술하시오.
+    </div>
+
+    <div class="concept-box">
+      <h3>💡 먼저 알아야 할 개념</h3>
+      <p><strong>"GCD(60, A) = 12"</strong>가 의미하는 것:</p>
+      <ul>
+        <li>A는 반드시 <strong>12의 배수</strong>야 (12로 나누어 떨어져야 하니까)</li>
+        <li>하지만 GCD가 <em>딱 12</em>여야 해. 12보다 더 큰 공약수가 있으면 안 돼!</li>
+        <li>60 = 12 × 5 이니까, A = 12 × k라고 놓으면 <strong>k와 5가 서로소</strong>(공약수가 1뿐)여야 해</li>
+        <li>쉽게 말하면: <strong>k는 5의 배수가 아니어야</strong> 해!</li>
+      </ul>
+    </div>
+
+    <div class="trap-box">
+      <h3>⚠️ 네가 틀린 이유</h3>
+      <p>A = 12라고 적었는데, 12는 세 자리 수가 아니야! 문제에서 <strong>"세 자리 자연수"</strong>라고 분명히 말했어. 항상 문제 조건을 끝까지 확인하자.</p>
+    </div>
+
+    <div class="solution-box">
+      <h3>✅ 풀이</h3>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <strong>소인수분해</strong>
+          <div class="math">60 = 2² × 3 × 5 &nbsp;&nbsp;|&nbsp;&nbsp; 12 = 2² × 3</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <strong>A의 조건 정리</strong>: A = 12 × k (k는 자연수), 그리고 k는 <strong>5의 배수가 아님</strong>
+          <div class="math">60 = 12 × 5 이므로, GCD(5, k) = 1 이어야 GCD가 정확히 12</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <strong>세 자리 수 조건</strong>: 100 ≤ 12k ≤ 999
+          <div class="math">k ≥ ⌈100 ÷ 12⌉ = 9 (8.33...이니까 올림)</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <strong>가장 작은 k 찾기</strong>: k = 9부터 확인. 9는 5의 배수? 아니야! → OK
+          <div class="math">A = 12 × 9 = <strong>108</strong></div>
+          검증: GCD(60, 108) = ? → 108 = 2² × 3³ → GCD = 2² × 3 = 12 ✓
+        </div>
+      </div>
+
+      <div class="answer">정답: 108</div>
+    </div>
+  </section>
+
+  <!-- ============ B87 ============ -->
+  <section class="problem-section" id="b87">
+    <div class="problem-number">B87</div>
+    <div class="problem-text">
+      두 자연수 <em>a</em>와 27의 <strong>공약수가 3개</strong>일 때, <em>a</em>의 값이 될 수 있는 <strong>100 이하</strong>의 자연수의 개수는?<br>
+      ① 8 &nbsp; ② 9 &nbsp; ③ 10 &nbsp; ④ 11 &nbsp; ⑤ 12
+    </div>
+
+    <div class="concept-box">
+      <h3>💡 먼저 알아야 할 개념</h3>
+      <p><strong>"두 수의 공약수 개수"</strong> = <strong>GCD의 약수 개수</strong>와 같아!</p>
+      <p>그래서 "공약수가 3개"라면 → GCD(a, 27)의 약수가 3개인 수를 찾으면 돼.</p>
+      <p style="margin-top:8px"><strong>약수가 정확히 3개인 수</strong>는? → <strong>p²</strong> 꼴(소수의 제곱)이야!<br>
+      왜냐하면 p²의 약수는 1, p, p² → 딱 3개.</p>
+    </div>
+
+    <div class="solution-box">
+      <h3>✅ 풀이</h3>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <strong>27을 소인수분해</strong>
+          <div class="math">27 = 3³</div>
+          27의 약수는 3의 거듭제곱뿐: 1, 3, 9, 27
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <strong>GCD(a, 27)은 27의 약수</strong> 중 하나: 1, 3, 9, 27<br>
+          이 중 약수가 3개인 것 → <strong>9 = 3²</strong> (약수: 1, 3, 9 → 3개 ✓)
+          <div class="math">따라서 GCD(a, 27) = 9</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          GCD가 9 → a는 <strong>9의 배수</strong>이면서, <strong>27의 배수는 아님</strong><br>
+          (27의 배수이면 GCD가 27이 되어 약수가 4개가 돼버려!)
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <strong>100 이하 9의 배수</strong>: 9, 18, 27, 36, 45, 54, 63, 72, 81, 90, 99 → <strong>11개</strong><br>
+          <strong>이 중 27의 배수</strong>: 27, 54, 81 → <strong>3개</strong> (빼야 해!)
+          <div class="math">11 − 3 = <strong>8개</strong></div>
+        </div>
+      </div>
+
+      <div class="answer">정답: ① 8개</div>
+    </div>
+  </section>
+
+  <!-- ============ B89 ============ -->
+  <section class="problem-section" id="b89">
+    <div class="problem-number">B89</div>
+    <div class="problem-text">
+      세 자연수 79, 115, 187을 어떤 자연수 <em>x</em>로 나누었더니 <strong>나머지가 모두 7</strong>이었다. 가능한 자연수 <em>x</em>의 개수는?<br>
+      ① 13 &nbsp; ② 9 &nbsp; ③ 6 &nbsp; ④ 4 &nbsp; ⑤ 3
+    </div>
+
+    <div class="concept-box">
+      <h3>💡 먼저 알아야 할 개념</h3>
+      <p><strong>"같은 나머지"</strong> 문제의 핵심 원리:</p>
+      <p>여러 수를 x로 나눠서 나머지가 모두 같으면 → <strong>각 수에서 그 나머지를 뺀 값</strong>들이 모두 x로 나누어 떨어져!</p>
+      <p style="margin-top:8px"><strong>그리고 아주 중요한 조건!</strong><br>
+      나머지가 7이니까, 나누는 수 x는 반드시 <strong>7보다 커야</strong> 해.<br>
+      (나머지는 항상 나누는 수보다 작아야 하니까!)</p>
+    </div>
+
+    <div class="trap-box">
+      <h3>⚠️ 네가 틀린 이유</h3>
+      <p>GCD의 약수 개수를 9개로 구한 건 맞는데, <strong>"x > 7"</strong> 조건을 빼먹었어! 나머지가 7이면, 나누는 수는 반드시 8 이상이어야 해.</p>
+    </div>
+
+    <div class="solution-box">
+      <h3>✅ 풀이</h3>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <strong>나머지 빼기</strong>
+          <div class="math">79 − 7 = 72 &nbsp;&nbsp;|&nbsp;&nbsp; 115 − 7 = 108 &nbsp;&nbsp;|&nbsp;&nbsp; 187 − 7 = 180</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <strong>72, 108, 180의 GCD 구하기</strong>
+          <div class="math">72 = 2³ × 3² &nbsp;&nbsp;|&nbsp;&nbsp; 108 = 2² × 3³ &nbsp;&nbsp;|&nbsp;&nbsp; 180 = 2² × 3² × 5</div>
+          <div class="math">GCD = 2² × 3² = 36</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <strong>36의 약수 나열</strong>
+          <div class="math">1, 2, 3, 4, 6, 9, 12, 18, 36 → 총 9개</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <strong>x > 7 조건 적용!</strong> (나머지 7보다 커야 하니까)
+          <div class="math">9, 12, 18, 36 → <strong>4개</strong>만 가능!</div>
+        </div>
+      </div>
+
+      <div class="answer">정답: ④ 4개</div>
+    </div>
+  </section>
+
+  <!-- ============ B90 ============ -->
+  <section class="problem-section" id="b90">
+    <div class="problem-number">B90</div>
+    <div class="problem-text">
+      어떤 수로 80을 나누면 <strong>1이 부족</strong>하고, 116을 나누면 <strong>8이 남는다</strong>고 한다. 이때, 어떤 수가 될 수 있는 자연수의 개수는?<br>
+      ① 1 &nbsp; ② 2 &nbsp; ③ 3 &nbsp; ④ 4 &nbsp; ⑤ 5
+    </div>
+
+    <div class="concept-box">
+      <h3>💡 먼저 알아야 할 개념: "부족하다"란?</h3>
+      <p><strong>"1이 부족하다"</strong> = 1만 더 있으면 딱 나누어 떨어진다는 뜻!</p>
+      <p>예시: 10을 3으로 나누면 → 10 = 3×3 + 1 → 나머지 1 ("1이 남는다")</p>
+      <p>하지만 "1이 부족하다"는 → <strong>1만 더하면 딱 맞는다</strong> → 80 + 1 = <strong>81이 나누어 떨어짐</strong></p>
+      <p style="margin-top:8px">다르게 보면: 나머지가 <strong>(나누는 수 − 1)</strong>이라는 뜻이야.</p>
+    </div>
+
+    <div class="trap-box">
+      <h3>⚠️ 네가 틀린 이유</h3>
+      <p>81과 108의 GCD = 27이고, 27의 약수 4개를 세서 답을 4로 골랐어. 하지만 나머지가 8이니까 <strong>어떤 수 > 8</strong>이어야 해! 이 조건을 적용하면 답이 달라져.</p>
+    </div>
+
+    <div class="solution-box">
+      <h3>✅ 풀이</h3>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <strong>조건 해석</strong>
+          <div class="math">"80 나누면 1이 부족" → 80 + 1 = <strong>81</strong>이 나누어 떨어짐</div>
+          <div class="math">"116 나누면 8이 남음" → 116 − 8 = <strong>108</strong>이 나누어 떨어짐</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <strong>81과 108의 GCD</strong>
+          <div class="math">81 = 3⁴ &nbsp;&nbsp;|&nbsp;&nbsp; 108 = 2² × 3³</div>
+          <div class="math">GCD = 3³ = 27</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <strong>27의 약수</strong>
+          <div class="math">1, 3, 9, 27 → 총 4개</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <strong>조건: 어떤 수 > 8</strong> (나머지가 8이니까!)
+          <div class="math">8보다 큰 것: 9, 27 → <strong>2개</strong></div>
+          검증: 80÷9 = 8…나머지 8(= 9−1, 1 부족 ✓), 116÷9 = 12…나머지 8 ✓
+        </div>
+      </div>
+
+      <div class="answer">정답: ② 2개</div>
+    </div>
+  </section>
+
+  <!-- ============ B91 ============ -->
+  <section class="problem-section" id="b91">
+    <div class="problem-number">B91</div>
+    <div class="problem-text">
+      다음 조건을 만족시키는 <strong>가장 작은 세 자리 자연수</strong> A의 값을 구하시오.
+      <div class="cond">
+        (가) 두 자연수 36과 A의 최대공약수가 18이다.<br>
+        (나) 자연수 36 + A는 5의 배수이다.
+      </div>
+    </div>
+
+    <div class="concept-box">
+      <h3>💡 먼저 알아야 할 개념</h3>
+      <p><strong>조건이 2개</strong>인 문제는 하나씩 차근차근!</p>
+      <ul>
+        <li><strong>조건 (가)</strong>에서 A의 후보를 줄이고</li>
+        <li><strong>조건 (나)</strong>로 최종 답을 걸러내는 거야</li>
+      </ul>
+      <p style="margin-top:8px">GCD(36, A) = 18이면 → A = 18k이고, 36 = 18 × 2이니까 <strong>k와 2가 서로소</strong>(= k가 홀수)여야 해.</p>
+    </div>
+
+    <div class="solution-box">
+      <h3>✅ 풀이</h3>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <strong>조건 (가)</strong>: GCD(36, A) = 18
+          <div class="math">36 = 18 × 2, A = 18 × k → GCD(2, k) = 1 → k는 홀수</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <strong>세 자리 조건</strong>: 100 ≤ 18k ≤ 999
+          <div class="math">k ≥ 6 (18×6=108), k는 홀수이므로 k = 7, 9, 11, 13, ...</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <strong>조건 (나)</strong>: 36 + A가 5의 배수 → A ≡ 4 (mod 5)
+          <div class="math">k=7: A=126, 126÷5 나머지 1 ✗</div>
+          <div class="math">k=9: A=162, 162÷5 나머지 2 ✗</div>
+          <div class="math">k=11: A=198, 198÷5 나머지 3 ✗</div>
+          <div class="math">k=13: A=234, 234÷5 나머지 4 ✓ → 36+234=270=5×54 ✓</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <strong>검증</strong>: GCD(36, 234) → 234 = 2 × 3² × 13, 36 = 2² × 3² → GCD = 2 × 3² = 18 ✓
+        </div>
+      </div>
+
+      <div class="answer">정답: 234</div>
+    </div>
+  </section>
+
+  <!-- ============ B93 ============ -->
+  <section class="problem-section" id="b93">
+    <div class="problem-number">B93</div>
+    <div class="problem-text">
+      자연수 <em>x</em>를 5로 나누면 3이 남고, 6으로 나누면 4가 남고, 7로 나누면 5가 남는 <strong>세 자리의 자연수</strong> <em>x</em> 중에서 <strong>가장 작은 수</strong>를 구하시오.
+    </div>
+
+    <div class="concept-box">
+      <h3>💡 먼저 알아야 할 개념: "부족분" 패턴 발견!</h3>
+      <p>나머지를 보면 규칙이 숨어 있어:</p>
+      <ul>
+        <li>5로 나누면 3 남음 → 5 − 3 = <strong>2 부족</strong></li>
+        <li>6으로 나누면 4 남음 → 6 − 4 = <strong>2 부족</strong></li>
+        <li>7로 나누면 5 남음 → 7 − 5 = <strong>2 부족</strong></li>
+      </ul>
+      <p style="margin-top:8px">모두 <strong>"2가 부족"</strong>해! 즉, <strong>x + 2</strong>는 5, 6, 7 <strong>모두로 나누어 떨어져</strong>!</p>
+      <p>→ x + 2 = LCM(5, 6, 7)의 배수</p>
+    </div>
+
+    <div class="trap-box">
+      <h3>⚠️ 네가 틀린 이유</h3>
+      <p>LCM을 구할 때 5, <strong>4</strong>, 7의 최소공배수(= 140)를 구했어. 하지만 나누는 수는 5, <strong>6</strong>, 7이야! 나머지(3, 4, 5)와 나누는 수(5, 6, 7)를 헷갈리지 말자. 140 − 2 = 138이 아니라, 210 − 2 = 208이야.</p>
+    </div>
+
+    <div class="solution-box">
+      <h3>✅ 풀이</h3>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <strong>패턴 발견</strong>: 부족분이 모두 2!
+          <div class="math">x + 2는 5, 6, 7의 공배수</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <strong>LCM(5, 6, 7) 구하기</strong>
+          <div class="math">5 = 5, &nbsp; 6 = 2 × 3, &nbsp; 7 = 7</div>
+          <div class="math">LCM = 2 × 3 × 5 × 7 = <strong>210</strong></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <strong>x 구하기</strong>
+          <div class="math">x + 2 = 210, 420, 630, 840, ...</div>
+          <div class="math">x = 208, 418, 628, 838, ...</div>
+          세 자리 중 가장 작은 것 → <strong>208</strong>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <strong>검증</strong>: 208÷5 = 41…3 ✓ | 208÷6 = 34…4 ✓ | 208÷7 = 29…5 ✓
+        </div>
+      </div>
+
+      <div class="answer">정답: 208</div>
+    </div>
+  </section>
+
+  <!-- ============ B94 ============ -->
+  <section class="problem-section" id="b94">
+    <div class="problem-number">B94</div>
+    <div class="problem-text">
+      세 자연수 40, 45, A의 <strong>최소공배수가 360</strong>이 되는 A의 값의 <strong>개수</strong>를 구하시오.
+    </div>
+
+    <div class="concept-box">
+      <h3>💡 먼저 알아야 할 개념</h3>
+      <p><strong>"LCM(40, 45, A) = 360"</strong>이면:</p>
+      <ul>
+        <li>먼저 LCM(40, 45)를 구해서 360과 같은지 확인</li>
+        <li>만약 LCM(40, 45) = 360이면 → A를 추가해도 LCM이 360을 넘으면 안 돼</li>
+        <li>즉, A는 <strong>360의 약수</strong>여야 해!</li>
+      </ul>
+      <p style="margin-top:8px">LCM에 새 수를 추가하면 LCM이 같거나 커져. 절대 작아지지 않아!</p>
+    </div>
+
+    <div class="solution-box">
+      <h3>✅ 풀이</h3>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <strong>LCM(40, 45) 확인</strong>
+          <div class="math">40 = 2³ × 5 &nbsp;&nbsp;|&nbsp;&nbsp; 45 = 3² × 5</div>
+          <div class="math">LCM(40, 45) = 2³ × 3² × 5 = 360 ✓</div>
+          이미 360이야! 그러니까 A를 추가해도 360을 넘기면 안 돼.
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <strong>A의 조건</strong>: LCM(360, A) = 360 → <strong>A는 360의 약수</strong>
+          <div class="math">360 = 2³ × 3² × 5</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <strong>360의 약수 개수</strong>
+          <div class="math">(3+1) × (2+1) × (1+1) = 4 × 3 × 2 = <strong>24</strong></div>
+        </div>
+      </div>
+
+      <div class="answer">정답: 24개</div>
+    </div>
+  </section>
+
+  <!-- ============ 공통 원리 정리 ============ -->
+  <section class="principle-section">
+    <h2>🎯 틀린 문제에서 발견한 공통 원리 5가지</h2>
+
+    <div class="principle-card">
+      <h3><span class="principle-num">1</span> GCD와 LCM 절대 헷갈리지 말자!</h3>
+      <p><strong>GCD</strong>(최대공약수) = 공통 소인수에서 <strong>작은 지수</strong> → 결과가 작아<br>
+      <strong>LCM</strong>(최소공배수) = 모든 소인수에서 <strong>큰 지수</strong> → 결과가 커<br>
+      문제에서 뭘 구하라고 했는지 <strong>밑줄 치고 시작</strong>하자! (B81에서 이걸 헷갈림)</p>
+    </div>
+
+    <div class="principle-card">
+      <h3><span class="principle-num">2</span> "나머지 < 나누는 수" — 이 조건을 꼭 확인!</h3>
+      <p>나머지가 7이면 나누는 수는 <strong>반드시 8 이상</strong>이야. 약수를 다 구한 다음에 <strong>나머지보다 큰 것만</strong> 골라야 해. B89, B90 둘 다 이걸 빠뜨려서 틀렸어.</p>
+    </div>
+
+    <div class="principle-card">
+      <h3><span class="principle-num">3</span> 문제 조건("세 자리", "100 이하")을 끝까지!</h3>
+      <p>수학적으로 맞는 답을 구해도, 문제가 요구하는 <strong>범위 조건</strong>을 안 지키면 틀려. B82에서 A=12는 세 자리가 아니고, B91에서도 세 자리 조건이 있었어. <strong>답을 쓰기 전에 조건 되돌아보기!</strong></p>
+    </div>
+
+    <div class="principle-card">
+      <h3><span class="principle-num">4</span> "부족하다" = 더하면 딱 나누어 떨어진다</h3>
+      <p>"1이 부족" → <strong>+1하면 나누어 떨어짐</strong><br>
+      "2가 부족" → <strong>+2하면 나누어 떨어짐</strong><br>
+      B90의 "80을 나누면 1이 부족" = 80+1=81이 나누어 떨어짐<br>
+      B93에서는 나머지 패턴(5−3=6−4=7−5=2)을 발견하면 한 방에 풀려!</p>
+    </div>
+
+    <div class="principle-card">
+      <h3><span class="principle-num">5</span> 소인수분해는 모든 풀이의 출발점!</h3>
+      <p>8문제 전부 <strong>소인수분해</strong>에서 시작해. 풀이 첫 줄에 반드시 소인수분해를 쓰는 습관을 들이자. 소인수분해만 정확히 하면, GCD·LCM·약수 개수 전부 자동으로 구할 수 있어!</p>
+    </div>
+  </section>
+
+  <div style="text-align:center;padding:40px 20px;font-size:14px">
+    <a href="index.html" style="color:#5B4FC7;text-decoration:none;font-weight:700">← 수학 연습장으로 돌아가기</a>
+  </div>
+
+</div>
+
+</body>
+</html>
