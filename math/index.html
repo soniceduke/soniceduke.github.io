@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>수학 연습장 | 가우스 반</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap');
+
+  :root {
+    --bg: #F7F5F0;
+    --surface: #FFFFFF;
+    --text: #2B2520;
+    --text-sub: #6B6560;
+    --border: #E4E0DA;
+    --accent: #5B4FC7;
+    --accent-light: #EEEDFE;
+    --teal: #0D7C66;
+    --teal-light: #E1F5EE;
+    --coral: #D85A30;
+    --coral-light: #FFF0E8;
+    --amber: #B07D10;
+    --amber-light: #FFF8E1;
+    --green: #1B8A50;
+    --green-light: #E8F8EF;
+    --shadow: 0 2px 12px rgba(0,0,0,0.05);
+    --radius: 14px;
+    --font: 'Noto Sans KR', -apple-system, sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: var(--font); background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; }
+
+  /* ── HEADER ── */
+  .header {
+    background: linear-gradient(135deg, #2D1B69 0%, #4A3A8A 40%, #5B4FC7 100%);
+    color: #fff;
+    padding: 40px 24px 52px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -2px; left: 0; right: 0;
+    height: 28px;
+    background: var(--bg);
+    border-radius: 28px 28px 0 0;
+  }
+  .header-inner { max-width: 760px; margin: 0 auto; position: relative; z-index: 1; }
+  .breadcrumb { font-size: 13px; opacity: 0.5; margin-bottom: 12px; }
+  .breadcrumb a { color: inherit; text-decoration: none; }
+  .breadcrumb a:hover { opacity: 0.9; text-decoration: underline; }
+  .header h1 { font-size: 26px; font-weight: 900; margin-bottom: 6px; }
+  .header p { font-size: 14px; opacity: 0.75; line-height: 1.6; }
+  .stats-row {
+    display: flex; gap: 20px; margin-top: 20px;
+    flex-wrap: wrap;
+  }
+  .stat {
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 12px;
+    padding: 10px 18px;
+    text-align: center;
+    min-width: 90px;
+  }
+  .stat-num { font-size: 22px; font-weight: 900; display: block; }
+  .stat-label { font-size: 11px; opacity: 0.6; letter-spacing: 0.3px; }
+
+  /* ── CONTAINER ── */
+  .container { max-width: 760px; margin: 0 auto; padding: 0 20px; }
+
+  /* ── TAB SWITCHER ── */
+  .tabs {
+    display: flex; gap: 4px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 4px;
+    margin: 28px auto 24px;
+    box-shadow: var(--shadow);
+  }
+  .tab-btn {
+    flex: 1;
+    padding: 12px 8px;
+    border: none;
+    background: none;
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-sub);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .tab-btn:hover { background: #F4F2ED; }
+  .tab-btn.active {
+    background: var(--accent);
+    color: white;
+    box-shadow: 0 2px 8px rgba(91,79,199,0.25);
+  }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ── CONCEPT CARDS ── */
+  .concept-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 14px;
+  }
+  .concept-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px;
+    box-shadow: var(--shadow);
+    transition: transform 0.15s, box-shadow 0.15s;
+    cursor: default;
+    position: relative;
+    overflow: hidden;
+  }
+  .concept-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  }
+  .concept-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .concept-card[data-level="mastered"]::before { background: var(--green); }
+  .concept-card[data-level="learning"]::before { background: var(--amber); }
+  .concept-card[data-level="new"]::before { background: var(--coral); }
+
+  .concept-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+  }
+  .badge-mastered { background: var(--green-light); color: var(--green); }
+  .badge-learning { background: var(--amber-light); color: var(--amber); }
+  .badge-new { background: var(--coral-light); color: var(--coral); }
+
+  .concept-card h3 {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    line-height: 1.4;
+  }
+  .concept-card p {
+    font-size: 13px;
+    color: var(--text-sub);
+    line-height: 1.6;
+  }
+  .concept-sessions {
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  /* ── SESSION LIST ── */
+  .session-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 14px;
+    box-shadow: var(--shadow);
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .session-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  }
+  .session-date {
+    flex-shrink: 0;
+    width: 56px;
+    text-align: center;
+  }
+  .session-date .month { font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; }
+  .session-date .day { font-size: 24px; font-weight: 900; color: var(--text); line-height: 1.1; }
+  .session-info { flex: 1; }
+  .session-info h3 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  .session-info p { font-size: 13px; color: var(--text-sub); line-height: 1.5; }
+  .session-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .session-tag {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 6px;
+    background: var(--accent-light);
+    color: var(--accent);
+  }
+  .session-count {
+    flex-shrink: 0;
+    background: var(--coral-light);
+    color: var(--coral);
+    font-size: 13px;
+    font-weight: 700;
+    padding: 6px 12px;
+    border-radius: 8px;
+    white-space: nowrap;
+    align-self: center;
+  }
+
+  /* ── EMPTY STATE ── */
+  .empty-state {
+    text-align: center;
+    padding: 48px 20px;
+    color: var(--text-sub);
+  }
+  .empty-state p { font-size: 14px; margin-top: 8px; }
+
+  /* ── FOOTER ── */
+  .footer {
+    text-align: center;
+    padding: 40px 20px;
+    font-size: 13px;
+    color: var(--text-sub);
+  }
+  .footer a { color: var(--accent); text-decoration: none; font-weight: 600; }
+  .footer a:hover { text-decoration: underline; }
+
+  @media (max-width: 500px) {
+    .header { padding: 28px 16px 44px; }
+    .header h1 { font-size: 22px; }
+    .concept-grid { grid-template-columns: 1fr; }
+    .session-card { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div class="breadcrumb"><a href="../index.html">가우스 반</a> › 수학 연습장</div>
+    <h1>수학 연습장</h1>
+    <p>틀린 문제를 정복하고, 개념을 차곡차곡 쌓아가는 곳</p>
+    <div class="stats-row">
+      <div class="stat"><span class="stat-num" id="stat-sessions">0</span><span class="stat-label">풀이 세션</span></div>
+      <div class="stat"><span class="stat-num" id="stat-problems">0</span><span class="stat-label">풀어본 문제</span></div>
+      <div class="stat"><span class="stat-num" id="stat-concepts">0</span><span class="stat-label">누적 개념</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <!-- Tab Switcher -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('concepts')">개념 사전</button>
+    <button class="tab-btn" onclick="switchTab('sessions')">풀이 기록</button>
+  </div>
+
+  <!-- Concepts Panel -->
+  <div id="panel-concepts" class="tab-panel active">
+    <div class="concept-grid" id="concept-grid"></div>
+  </div>
+
+  <!-- Sessions Panel -->
+  <div id="panel-sessions" class="tab-panel">
+    <div id="session-list"></div>
+  </div>
+</div>
+
+<div class="footer">
+  <a href="../index.html">← 가우스 반 홈으로</a>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+// 📝 데이터 배열 — 새 세션/개념을 추가할 때 여기만 수정하면 됩니다!
+// ══════════════════════════════════════════════════════════════
+
+const concepts = [
+  // level: "mastered" | "learning" | "new"
+  // sessions: 어떤 풀이 세션에서 다뤘는지 (날짜)
+  {
+    title: "소인수분해",
+    desc: "자연수를 소수의 곱으로 쪼개기. 모든 약수·배수 문제의 출발점!",
+    level: "learning",
+    sessions: ["2026-04-14"]
+  },
+  {
+    title: "최대공약수(GCD)",
+    desc: "공통 소인수에서 작은 지수를 골라. 두 수를 동시에 나눌 수 있는 가장 큰 수.",
+    level: "learning",
+    sessions: ["2026-04-14"]
+  },
+  {
+    title: "최소공배수(LCM)",
+    desc: "모든 소인수에서 큰 지수를 골라. 두 수의 공통 배수 중 가장 작은 수.",
+    level: "learning",
+    sessions: ["2026-04-14"]
+  },
+  {
+    title: "약수의 개수 구하기",
+    desc: "소인수분해 후 (지수+1)을 모두 곱하면 약수 개수가 나와.",
+    level: "learning",
+    sessions: ["2026-04-14"]
+  },
+  {
+    title: "나머지와 나누는 수의 관계",
+    desc: "나머지는 항상 나누는 수보다 작아야 해! 이 조건을 빼먹으면 틀려.",
+    level: "new",
+    sessions: ["2026-04-14"]
+  },
+  {
+    title: "'부족하다' 표현 해석",
+    desc: "'N이 부족' = N을 더하면 나누어 떨어진다. 나머지가 (나누는 수 − N)이라는 뜻.",
+    level: "new",
+    sessions: ["2026-04-14"]
+  },
+  {
+    title: "나머지 패턴(부족분) 발견",
+    desc: "여러 나눗셈의 부족분이 같으면, (원래 수 + 부족분)이 모든 나누는 수의 공배수!",
+    level: "new",
+    sessions: ["2026-04-14"]
+  },
+  {
+    title: "GCD로 나눈 몫과 LCM",
+    desc: "A = mG, B = nG (m, n 서로소)일 때, LCM = m × n × G. 비로 놓으면 미지수가 하나로 줄어!",
+    level: "new",
+    sessions: ["2026-04-15"]
+  },
+  {
+    title: "GCD × LCM = A × B",
+    desc: "어떤 두 자연수든 최대공약수와 최소공배수의 곱은 두 수의 곱과 같다. 만능 공식!",
+    level: "new",
+    sessions: ["2026-04-15"]
+  },
+  {
+    title: "비례식에서 비 구하기",
+    desc: "A/4 = B/5 같은 식은 공통값 k를 놓으면 A = 4k, B = 5k로 바꿀 수 있어.",
+    level: "new",
+    sessions: ["2026-04-15"]
+  },
+];
+
+const sessions = [
+  {
+    date: "2026-04-14",
+    title: "소인수분해·GCD·LCM 틀린 문제 정복",
+    desc: "Xistory 중등수학 1-1에서 틀린 8문제(B81~B94)를 개념부터 다시 풀어봄",
+    problems: 8,
+    tags: ["소인수분해", "GCD", "LCM", "약수", "나머지"],
+    file: "2026-04-14.html"
+  },
+  {
+    date: "2026-04-15",
+    title: "GCD·LCM과 비의 관계",
+    desc: "B100, B101 — 두 수를 비로 놓고 GCD·LCM 공식으로 푸는 문제",
+    problems: 2,
+    tags: ["GCD", "LCM", "비", "서로소"],
+    file: "2026-04-15.html"
+  },
+  // ↓ 새 세션을 여기에 추가하세요! 예:
+  // {
+  //   date: "2026-04-20",
+  //   title: "일차방정식 틀린 문제",
+  //   desc: "...",
+  //   problems: 5,
+  //   tags: ["방정식", "이항"],
+  //   file: "2026-04-20.html"
+  // },
+];
+
+// ══════════════════════════════════════════════════════════════
+// 🎨 렌더링 로직 (건드리지 않아도 됩니다)
+// ══════════════════════════════════════════════════════════════
+
+function renderConcepts() {
+  const grid = document.getElementById('concept-grid');
+  if (concepts.length === 0) {
+    grid.innerHTML = '<div class="empty-state"><p>아직 배운 개념이 없어요. 첫 번째 풀이 세션을 시작해보세요!</p></div>';
+    return;
+  }
+
+  const order = { mastered: 0, learning: 1, new: 2 };
+  const sorted = [...concepts].sort((a, b) => order[a.level] - order[b.level]);
+
+  grid.innerHTML = sorted.map(c => {
+    const badgeClass = c.level === 'mastered' ? 'badge-mastered' : c.level === 'learning' ? 'badge-learning' : 'badge-new';
+    const badgeText = c.level === 'mastered' ? '완전 이해' : c.level === 'learning' ? '연습 중' : '새 개념';
+    return `
+      <div class="concept-card" data-level="${c.level}">
+        <span class="concept-badge ${badgeClass}">${badgeText}</span>
+        <h3>${c.title}</h3>
+        <p>${c.desc}</p>
+        <div class="concept-sessions">${c.sessions.length}회 학습</div>
+      </div>`;
+  }).join('');
+}
+
+function renderSessions() {
+  const list = document.getElementById('session-list');
+  if (sessions.length === 0) {
+    list.innerHTML = '<div class="empty-state"><p>아직 풀이 기록이 없어요.</p></div>';
+    return;
+  }
+
+  list.innerHTML = sessions.map(s => {
+    const d = new Date(s.date);
+    const month = (d.getMonth() + 1) + '월';
+    const day = d.getDate();
+    return `
+      <a class="session-card" href="${s.file}">
+        <div class="session-date">
+          <div class="month">${month}</div>
+          <div class="day">${day}</div>
+        </div>
+        <div class="session-info">
+          <h3>${s.title}</h3>
+          <p>${s.desc}</p>
+          <div class="session-tags">${s.tags.map(t => `<span class="session-tag">${t}</span>`).join('')}</div>
+        </div>
+        <div class="session-count">${s.problems}문제</div>
+      </a>`;
+  }).join('');
+}
+
+function updateStats() {
+  document.getElementById('stat-sessions').textContent = sessions.length;
+  document.getElementById('stat-problems').textContent = sessions.reduce((sum, s) => sum + s.problems, 0);
+  document.getElementById('stat-concepts').textContent = concepts.length;
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('panel-' + tab).classList.add('active');
+}
+
+renderConcepts();
+renderSessions();
+updateStats();
+</script>
+
+</body>
+</html>
