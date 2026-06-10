@@ -54,7 +54,6 @@ body {
   padding: 0 1.5rem;
 }
 
-/* ── HERO ── */
 .hero {
   text-align: center;
   padding: 4rem 1rem 2.5rem;
@@ -123,7 +122,6 @@ body {
   letter-spacing: 0.03em;
 }
 
-/* ── PROGRESS ── */
 .progress-section {
   background: var(--card);
   border: 1px solid var(--border);
@@ -162,7 +160,6 @@ body {
   transition: width 1s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* ── SECTION LABEL ── */
 .section-label {
   display: flex;
   align-items: center;
@@ -181,7 +178,6 @@ body {
   background: var(--border);
 }
 
-/* ── WEEK CARDS ── */
 .weeks-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -201,6 +197,7 @@ body {
   transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
   position: relative;
   overflow: hidden;
+  animation: cardIn 0.5s ease both;
 }
 .week-card::before {
   content: '';
@@ -211,130 +208,33 @@ body {
   transition: opacity 0.3s;
 }
 
-/* Ready state */
-.week-card.is-ready {
-  cursor: pointer;
-  box-shadow: var(--shadow-sm);
-}
-.week-card.is-ready:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
-  border-color: var(--orange);
-}
-.week-card.is-ready::before {
-  background: var(--orange);
-  opacity: 1;
-}
+.week-card.is-ready { cursor: pointer; box-shadow: var(--shadow-sm); }
+.week-card.is-ready:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--orange); }
+.week-card.is-ready::before { background: var(--orange); opacity: 1; }
+.week-card.is-locked { opacity: 0.55; }
+.week-card.is-locked::before { background: var(--border); opacity: 0.5; }
+.week-card.is-soon { opacity: 0.7; box-shadow: var(--shadow-sm); }
+.week-card.is-soon::before { background: var(--blue); opacity: 0.6; }
 
-/* Locked / Soon state */
-.week-card.is-locked {
-  opacity: 0.55;
-}
-.week-card.is-locked::before {
-  background: var(--border);
-  opacity: 0.5;
-}
-.week-card.is-soon {
-  opacity: 0.7;
-  box-shadow: var(--shadow-sm);
-}
-.week-card.is-soon::before {
-  background: var(--blue);
-  opacity: 0.6;
-}
+.card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.8rem; }
+.card-emoji { font-size: 2rem; line-height: 1; filter: grayscale(0); transition: transform 0.3s; }
+.week-card.is-ready:hover .card-emoji { transform: scale(1.15) rotate(-5deg); }
+.week-card.is-locked .card-emoji { filter: grayscale(0.6); }
 
-/* Card internals */
-.card-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 0.8rem;
-}
-.card-emoji {
-  font-size: 2rem;
-  line-height: 1;
-  filter: grayscale(0);
-  transition: transform 0.3s;
-}
-.week-card.is-ready:hover .card-emoji {
-  transform: scale(1.15) rotate(-5deg);
-}
-.week-card.is-locked .card-emoji {
-  filter: grayscale(0.6);
-}
+.card-badges { display: flex; gap: 0.35rem; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+.badge { font-size: 0.68rem; font-weight: 600; padding: 0.2rem 0.6rem; border-radius: 100px; letter-spacing: 0.02em; white-space: nowrap; }
+.badge-week { background: var(--paper-warm); color: var(--ink-light); }
+.badge-hours { background: var(--paper-warm); color: var(--ink-faint); font-family: 'JetBrains Mono', monospace; }
+.badge-ready { background: var(--green-soft); color: var(--green); }
+.badge-soon { background: var(--blue-soft); color: var(--blue); }
+.badge-locked { background: var(--paper-warm); color: var(--ink-faint); }
 
-.card-badges {
-  display: flex;
-  gap: 0.35rem;
-  align-items: center;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-}
-.badge {
-  font-size: 0.68rem;
-  font-weight: 600;
-  padding: 0.2rem 0.6rem;
-  border-radius: 100px;
-  letter-spacing: 0.02em;
-  white-space: nowrap;
-}
-.badge-week {
-  background: var(--paper-warm);
-  color: var(--ink-light);
-}
-.badge-hours {
-  background: var(--paper-warm);
-  color: var(--ink-faint);
-  font-family: 'JetBrains Mono', monospace;
-}
-.badge-ready {
-  background: var(--green-soft);
-  color: var(--green);
-}
-.badge-soon {
-  background: var(--blue-soft);
-  color: var(--blue);
-}
-.badge-locked {
-  background: var(--paper-warm);
-  color: var(--ink-faint);
-}
+.card-date { font-size: 0.75rem; color: var(--ink-faint); margin-bottom: 0.3rem; font-family: 'JetBrains Mono', monospace; }
+.card-title { font-size: 1.05rem; font-weight: 700; line-height: 1.4; margin-bottom: 0.5rem; color: var(--ink); }
+.card-desc { font-size: 0.82rem; color: var(--ink-light); line-height: 1.65; margin-bottom: 0.8rem; flex: 1; }
+.card-tags { display: flex; gap: 0.35rem; flex-wrap: wrap; }
+.tag { font-size: 0.68rem; padding: 0.2rem 0.6rem; border-radius: 6px; background: var(--paper-warm); color: var(--ink-faint); font-weight: 500; }
 
-.card-date {
-  font-size: 0.75rem;
-  color: var(--ink-faint);
-  margin-bottom: 0.3rem;
-  font-family: 'JetBrains Mono', monospace;
-}
-.card-title {
-  font-size: 1.05rem;
-  font-weight: 700;
-  line-height: 1.4;
-  margin-bottom: 0.5rem;
-  color: var(--ink);
-}
-.card-desc {
-  font-size: 0.82rem;
-  color: var(--ink-light);
-  line-height: 1.65;
-  margin-bottom: 0.8rem;
-  flex: 1;
-}
-.card-tags {
-  display: flex;
-  gap: 0.35rem;
-  flex-wrap: wrap;
-}
-.tag {
-  font-size: 0.68rem;
-  padding: 0.2rem 0.6rem;
-  border-radius: 6px;
-  background: var(--paper-warm);
-  color: var(--ink-faint);
-  font-weight: 500;
-}
-
-/* Color accents per card */
 .week-card[data-color="orange"].is-ready::before { background: var(--orange); }
 .week-card[data-color="blue"].is-ready::before { background: var(--blue); }
 .week-card[data-color="green"].is-ready::before { background: var(--green); }
@@ -351,22 +251,57 @@ body {
 .week-card[data-color="teal"].is-ready:hover { border-color: var(--teal); }
 .week-card[data-color="gold"].is-ready:hover { border-color: var(--gold); }
 
-/* Ready card glow on hover */
-.card-go {
-  display: none;
-  align-items: center;
-  gap: 0.3rem;
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: var(--orange);
-  margin-top: 0.5rem;
-}
-.card-go::after {
-  content: '→';
-  transition: transform 0.2s;
-}
+.card-go { display: none; align-items: center; gap: 0.3rem; font-size: 0.78rem; font-weight: 600; color: var(--orange); margin-top: 0.5rem; }
+.card-go::after { content: '→'; transition: transform 0.2s; }
 .week-card.is-ready .card-go { display: flex; }
 .week-card.is-ready:hover .card-go::after { transform: translateX(4px); }
+
+/* ── GUIDE CARDS ── */
+.guides-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1rem;
+  margin-bottom: 3rem;
+}
+.guide-card {
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.4rem;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  animation: cardIn 0.5s ease both;
+}
+.guide-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 4px; height: 100%;
+  border-radius: 2px 0 0 2px;
+}
+.guide-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+.guide-card:hover .guide-emoji { transform: scale(1.15) rotate(-5deg); }
+.guide-card.shield::before { background: #2563eb; }
+.guide-card.shield:hover { border-color: #2563eb; }
+.guide-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.8rem; }
+.guide-emoji { font-size: 2rem; line-height: 1; transition: transform 0.3s; }
+.guide-badge { font-size: 0.68rem; font-weight: 600; padding: 0.2rem 0.7rem; border-radius: 100px; }
+.guide-badge.required { background: #fee2e2; color: #dc2626; }
+.guide-title { font-size: 1.05rem; font-weight: 700; line-height: 1.4; margin-bottom: 0.5rem; }
+.guide-desc { font-size: 0.82rem; color: var(--ink-light); line-height: 1.65; margin-bottom: 0.8rem; flex: 1; }
+.guide-go { display: flex; align-items: center; gap: 0.3rem; font-size: 0.78rem; font-weight: 600; color: #2563eb; }
+.guide-go::after { content: '→'; transition: transform 0.2s; }
+.guide-card:hover .guide-go::after { transform: translateX(4px); }
 
 /* ── FOOTER ── */
 .site-footer {
@@ -377,25 +312,15 @@ body {
   color: var(--ink-faint);
   line-height: 1.8;
 }
-.site-footer a {
-  color: var(--orange);
-  text-decoration: none;
-}
+.site-footer a { color: var(--orange); text-decoration: none; }
 
-/* ── ENTRANCE ANIMATION ── */
 @keyframes cardIn {
   from { opacity: 0; transform: translateY(16px); }
   to { opacity: 1; transform: translateY(0); }
 }
-.week-card {
-  animation: cardIn 0.5s ease both;
-}
 
-/* ── RESPONSIVE ── */
 @media (max-width: 700px) {
-  .weeks-grid {
-    grid-template-columns: 1fr;
-  }
+  .weeks-grid, .guides-grid { grid-template-columns: 1fr; }
   .hero { padding: 3rem 0.5rem 2rem; }
   .hero-stats { gap: 1.2rem; }
   .stat-num { font-size: 1.3rem; }
@@ -445,6 +370,19 @@ body {
   <div class="section-label">전체 커리큘럼</div>
   <section class="weeks-grid" id="lockedGrid"></section>
 
+  <div class="section-label">특별 콘텐츠</div>
+  <section class="guides-grid">
+    <a class="guide-card shield" href="guides/smartphone-safety.html">
+      <div class="guide-top">
+        <span class="guide-emoji">🛡️</span>
+        <span class="guide-badge required">필독</span>
+      </div>
+      <div class="guide-title">스마트폰 속 보이지 않는 함정들</div>
+      <div class="guide-desc">스미싱, 피싱, 도박, 그루밍, 마약 — 첫 스마트폰을 가진 아이가 반드시 알아야 할 위험 신호와 대응법. 실제 화면 시뮬레이션 + 판별 퀴즈 7문제.</div>
+      <div class="guide-go">읽으러 가기</div>
+    </a>
+  </section>
+
   <footer class="site-footer">
     <p>초등학생을 위한 과학·수학 융합 사전학습 교재</p>
     <p style="margin-top:4px">매주 수업 전에 읽어오면, 수업이 2배 재밌어진다.</p>
@@ -490,13 +428,10 @@ function makeCard(w, delay) {
   const st = statusBadge(w.status);
   const isReady = w.status === 'ready';
   const el = document.createElement(isReady ? 'a' : 'div');
-
   if (isReady) el.href = `lectures/week-${String(w.week).padStart(2,'0')}.html`;
-
   el.className = `week-card ${isReady ? 'is-ready' : w.status === 'soon' ? 'is-soon' : 'is-locked'}`;
   el.dataset.color = w.color;
   el.style.animationDelay = `${delay * 0.06}s`;
-
   el.innerHTML = `
     <div class="card-top">
       <span class="card-emoji">${w.emoji}</span>
@@ -523,7 +458,6 @@ function render() {
   const lockedGrid = document.getElementById('lockedGrid');
   let readyCount = 0;
   let di = 0;
-
   weeks.forEach(w => {
     if (w.status === 'ready') {
       readyCount++;
@@ -534,7 +468,6 @@ function render() {
       lockedGrid.appendChild(makeCard(w, di++));
     }
   });
-
   document.getElementById('readyNum').textContent = readyCount;
   document.getElementById('progressText').textContent = `${readyCount} / ${weeks.length}`;
   document.getElementById('progressFill').style.width = `${(readyCount / weeks.length) * 100}%`;
@@ -542,7 +475,7 @@ function render() {
 
 render();
 </script>
-  <!-- 수학 연습장 바로가기 -->
+<!-- 수학 연습장 바로가기 -->
 <div style="position:fixed;bottom:20px;right:20px;z-index:9999;">
   <a href="math/" style="display:flex;align-items:center;gap:8px;background:linear-gradient(135deg,#2D1B69,#5B4FC7);color:#fff;text-decoration:none;padding:12px 20px;border-radius:14px;font-family:'Noto Sans KR',sans-serif;font-size:14px;font-weight:700;box-shadow:0 4px 16px rgba(91,79,199,0.35);transition:transform 0.2s,box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 24px rgba(91,79,199,0.45)'" onmouseout="this.style.transform='none';this.style.boxShadow='0 4px 16px rgba(91,79,199,0.35)'">
     ✏️ 수학 연습장
