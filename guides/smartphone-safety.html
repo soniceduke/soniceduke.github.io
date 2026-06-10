@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>첫 스마트폰 안전 가이드</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Noto+Serif+KR:wght@400;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#2c2c2c;--ink-light:#555;--ink-faint:#888;--paper:#f9f7f3;--card:#fff;--blue:#2563eb;--blue-deep:#1e40af;--blue-soft:#eff6ff;--green:#16a34a;--green-deep:#15803d;--green-soft:#f0fdf4;--coral:#dc2626;--coral-soft:#fef2f2;--gold:#d97706;--gold-soft:#fffbeb;--violet:#7c3aed;--violet-soft:#f5f3ff;--pink:#ec4899;--border:#e4ddd4;--shadow:0 2px 24px rgba(0,0,0,.05);--shadow-lg:0 8px 40px rgba(0,0,0,.08);--radius:16px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--paper);color:var(--ink);-webkit-font-smoothing:antialiased}
+
+.hero{position:relative;min-height:50vh;display:flex;align-items:flex-end;padding:3rem 2rem 2.5rem;overflow:hidden;background:linear-gradient(160deg,#1e3a5f 0%,#2563eb 40%,#3b82f6 70%,#60a5fa 100%)}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 20% 80%,rgba(96,165,250,.25) 0%,transparent 70%)}
+.hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:80px;background:linear-gradient(to top,var(--paper) 0%,transparent 100%)}
+.hero-content{max-width:720px;margin:0 auto;position:relative;z-index:1;color:#fff;width:100%}
+.hero-meta{font-size:.78rem;opacity:.6;margin-bottom:.8rem}
+.hero h1{font-family:'Noto Serif KR',serif;font-size:clamp(1.8rem,5.5vw,2.8rem);font-weight:700;line-height:1.3;margin-bottom:.8rem}
+.hero-desc{font-size:1rem;opacity:.8;font-weight:300;line-height:1.7;max-width:500px}
+
+.content{max-width:720px;margin:0 auto;padding:2rem 2rem 4rem}
+.reading-info{display:flex;align-items:center;gap:.8rem;padding:1rem 0 2rem;border-bottom:1px solid var(--border);margin-bottom:2.5rem;font-size:.82rem;color:var(--ink-faint)}
+.reading-dot{width:6px;height:6px;background:var(--blue);border-radius:50%}
+
+.story{font-family:'Noto Serif KR',serif;font-size:1.08rem;line-height:2;color:var(--ink);margin-bottom:2rem}
+.story.first-para::first-letter{font-size:3.2em;float:left;line-height:.85;margin:.05em .12em 0 0;color:var(--blue-deep);font-weight:700}
+.body-text{font-size:1rem;line-height:2;color:var(--ink);margin-bottom:1.5rem}
+.body-text strong{color:var(--blue-deep);font-weight:700}
+
+.section-header{margin:3rem 0 1.5rem;padding-top:2rem;border-top:1px solid var(--border)}
+.section-number{font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;color:var(--blue);margin-bottom:.4rem}
+.section-title{font-family:'Noto Serif KR',serif;font-size:1.5rem;font-weight:700;color:var(--ink);line-height:1.4}
+
+.concept{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.8rem;margin:1.8rem 0;box-shadow:var(--shadow);position:relative}
+.concept::before{content:'';position:absolute;top:0;left:24px;width:40px;height:3px;background:var(--blue);border-radius:0 0 2px 2px}
+.concept-badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);background:var(--blue-soft);padding:.2rem .7rem;border-radius:100px;margin-bottom:.8rem}
+.concept h3{font-size:1.1rem;font-weight:700;margin-bottom:.7rem;color:var(--blue-deep)}
+.concept p{font-size:.95rem;line-height:1.9;color:var(--ink-light)}
+
+.warn{background:var(--coral-soft);border-left:4px solid var(--coral);border-radius:0 12px 12px 0;padding:1.3rem 1.5rem;margin:2rem 0;font-size:.95rem;line-height:1.85}
+.warn-label{font-weight:700;color:var(--coral);margin-bottom:.3rem;font-size:.88rem}
+.safe{background:var(--green-soft);border-left:4px solid var(--green);border-radius:0 12px 12px 0;padding:1.3rem 1.5rem;margin:2rem 0;font-size:.95rem;line-height:1.85}
+.safe-label{font-weight:700;color:var(--green-deep);margin-bottom:.3rem;font-size:.88rem}
+.pause{background:var(--gold-soft);border-left:4px solid var(--gold);border-radius:0 12px 12px 0;padding:1.3rem 1.5rem;margin:2rem 0;font-size:.95rem;line-height:1.85}
+.pause-label{font-weight:700;color:#92400e;margin-bottom:.3rem;font-size:.88rem}
+
+/* ── PHONE MESSAGE SIM ── */
+.phone-sim{max-width:340px;margin:1.8rem auto;border-radius:24px;overflow:hidden;border:3px solid #333;box-shadow:var(--shadow-lg);background:#fff}
+.phone-top{background:#333;color:#fff;padding:.5rem 1rem;display:flex;justify-content:space-between;font-size:.65rem;font-family:'JetBrains Mono',monospace}
+.phone-body{padding:.8rem;min-height:180px}
+.phone-label{text-align:center;font-size:.72rem;color:var(--ink-faint);padding:.4rem;background:var(--paper);margin:-.8rem -.8rem .8rem;border-bottom:1px solid var(--border)}
+
+/* SMS style */
+.sms{background:#f0f0f0;border-radius:16px;padding:.8rem 1rem;margin-bottom:.5rem;font-size:.85rem;line-height:1.6;position:relative;max-width:90%}
+.sms .sender{font-size:.7rem;font-weight:700;color:var(--ink-faint);margin-bottom:.3rem}
+.sms a{color:var(--blue);text-decoration:underline}
+.sms.scam{background:#fff3f3;border:1px solid #fecaca}
+.sms.real{background:#f0fdf4;border:1px solid #bbf7d0}
+
+/* Notification style */
+.notif{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:.7rem .9rem;margin-bottom:.5rem;display:flex;gap:.7rem;align-items:flex-start}
+.notif-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.notif-body{flex:1}
+.notif-title{font-size:.8rem;font-weight:700;margin-bottom:.15rem}
+.notif-text{font-size:.75rem;color:var(--ink-light);line-height:1.5}
+
+/* Quiz cards for fake/real */
+.judge-card{background:var(--card);border:2px solid var(--border);border-radius:var(--radius);overflow:hidden;margin:1.5rem 0;box-shadow:var(--shadow);transition:border-color .3s}
+.judge-scenario{padding:1rem}
+.judge-btns{display:flex;border-top:1px solid var(--border)}
+.judge-btn{flex:1;padding:.8rem;text-align:center;font-family:inherit;font-size:.88rem;font-weight:700;cursor:pointer;border:none;background:var(--card);transition:all .2s}
+.judge-btn:first-child{border-right:1px solid var(--border)}
+.judge-btn.safe-btn:hover{background:var(--green-soft);color:var(--green)}
+.judge-btn.danger-btn:hover{background:var(--coral-soft);color:var(--coral)}
+.judge-btn:disabled{cursor:default;opacity:.5}
+.judge-result{padding:.8rem 1rem;font-size:.85rem;line-height:1.7;display:none;border-top:1px solid var(--border)}
+.judge-result.show{display:block}
+.judge-result.correct{background:var(--green-soft);color:#166534}
+.judge-result.wrong{background:var(--coral-soft);color:#991b1b}
+.judge-card.answered-safe{border-color:var(--green)}
+.judge-card.answered-danger{border-color:var(--coral)}
+
+/* Steps */
+.action-steps{margin:1.5rem 0}
+.action-step{display:flex;gap:1rem;align-items:flex-start;margin-bottom:1rem;padding:1rem;background:var(--card);border:1px solid var(--border);border-radius:12px}
+.step-num{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.85rem;font-weight:700;color:#fff;flex-shrink:0}
+.step-text{flex:1;font-size:.92rem;line-height:1.7}
+.step-text strong{color:var(--ink)}
+
+.page-footer{max-width:720px;margin:0 auto;padding:2rem;text-align:center;font-size:.75rem;color:var(--ink-faint);border-top:1px solid var(--border)}
+.scroll-progress{position:fixed;top:0;left:0;width:0%;height:3px;background:linear-gradient(90deg,var(--blue-deep),var(--blue));z-index:100;transition:width .1s}
+@media(max-width:600px){.hero{min-height:42vh;padding:2rem 1.2rem}.content{padding:1.5rem 1.2rem 3rem}.section-title{font-size:1.25rem}.phone-sim{max-width:100%}}
+</style>
+</head>
+<body>
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<header class="hero">
+  <div class="hero-content">
+    <div class="hero-meta">📱 첫 스마트폰을 갖게 된 너에게</div>
+    <h1>스마트폰 속<br>보이지 않는 함정들</h1>
+    <p class="hero-desc">축하해, 첫 스마트폰! 하지만 이 작은 기계 안에는 멋진 것들만 있는 게 아니다. 나쁜 어른들이 보내는 교묘한 함정도 숨어 있다.</p>
+  </div>
+</header>
+
+<article class="content">
+  <div class="reading-info"><span class="reading-dot"></span><span>읽는 시간 약 15분</span><span>·</span><span>반드시 끝까지 읽어주세요</span></div>
+
+  <!-- ━━━ INTRO ━━━ -->
+  <p class="story first-para">스마트폰은 마법의 문 같은 것이다. 이 문을 열면 세상의 모든 정보를 찾을 수 있고, 친구와 이야기할 수 있고, 재미있는 영상도 볼 수 있다. 하지만 이 문은 <strong>양쪽으로</strong> 열린다. 내가 세상을 볼 수 있다는 것은, 세상에서 <strong>나에게도 접근할 수 있다</strong>는 뜻이다.</p>
+
+  <p class="body-text">그 중에는 나쁜 의도를 가진 사람들이 있다. 그들은 어린이와 어른을 가리지 않고, 아주 교묘한 방법으로 함정을 파놓는다. 이 글을 읽고 나면 <strong>"아, 이건 함정이구나!"</strong>를 알아차릴 수 있게 된다. 가장 중요한 건, 혹시 실수로 빠져들었더라도 <strong>절대 혼자 해결하려 하지 말고 바로 부모님께 말하는 것</strong>이다.</p>
+
+  <div class="safe">
+    <div class="safe-label">💚 이 글에서 가장 중요한 한마디</div>
+    실수해도 괜찮다. 속아도 괜찮다. 누구나 속을 수 있다. 어른도 속는다.<br>
+    하지만 <strong>"이상하다"고 느낀 순간, 바로 엄마·아빠에게 말하면 모든 문제는 해결된다.</strong><br>
+    늦었다고 생각할 때가 가장 빠른 때다. 혼나지 않는다. 부모님은 언제나 네 편이다.
+  </div>
+
+  <!-- ━━━ CHAPTER 1 ━━━ -->
+  <div class="section-header">
+    <div class="section-number">Chapter 01</div>
+    <h2 class="section-title">모르는 번호에서 온 문자 — 스미싱</h2>
+  </div>
+
+  <p class="body-text">어느 날 이런 문자가 온다고 생각해보자.</p>
+
+  <div class="phone-sim">
+    <div class="phone-top"><span>오전 10:23</span><span>📶 LTE</span></div>
+    <div class="phone-body">
+      <div class="phone-label">📩 문자 메시지</div>
+      <div class="sms scam">
+        <div class="sender">010-3948-XXXX</div>
+        [CJ대한통운] 고객님 택배가 주소 불일치로 반송됩니다. 확인하세요: http://bit.ly/3x9kZp
+      </div>
+    </div>
+  </div>
+
+  <p class="body-text">택배가 왔나? 하고 링크를 누르고 싶어질 수 있다. 하지만 이것은 <strong>스미싱(Smishing)</strong>이라는 사기다. SMS(문자) + Phishing(낚시)를 합친 말이다. 링크를 누르면 가짜 사이트로 이동해서 개인정보를 빼가거나, 폰에 악성 프로그램을 몰래 설치한다.</p>
+
+  <div class="warn">
+    <div class="warn-label">🚨 이런 문자는 100% 사기다</div>
+    · 택배 반송, 주소 확인 → 링크 클릭 유도<br>
+    · 교통 범칙금 미납 → 링크 클릭 유도<br>
+    · "축하합니다! 당첨되었습니다" → 링크 클릭 유도<br>
+    · 은행 계좌 이상, 카드 정지 → 링크 클릭 유도<br>
+    · 정부기관(경찰, 법원) 사칭 → 전화 유도<br><br>
+    공통점이 보이는가? 전부 <strong>"빨리 뭔가를 하라"고 재촉</strong>한다. 진짜 기관은 문자 하나로 재촉하지 않는다.
+  </div>
+
+  <div class="concept">
+    <span class="concept-badge">핵심 원칙</span>
+    <h3>수상한 문자 판별법 3가지</h3>
+    <p>
+      <strong>① 모르는 번호인가?</strong> → 경고!<br><br>
+      <strong>② 링크가 들어 있는가?</strong> → 절대 누르지 마. 특히 짧은 링크(bit.ly 등)는 어디로 가는지 알 수 없다.<br><br>
+      <strong>③ "빨리 하라"고 재촉하는가?</strong> → 사기꾼의 전형적인 수법이다. 생각할 시간을 주지 않으려는 것이다.
+    </p>
+  </div>
+
+  <!-- ━━━ CHAPTER 2 ━━━ -->
+  <div class="section-header">
+    <div class="section-number">Chapter 02</div>
+    <h2 class="section-title">너무 좋은 이야기 — 공짜의 함정</h2>
+  </div>
+
+  <p class="body-text">인터넷이나 게임을 하다 보면 이런 것들을 만날 수 있다.</p>
+
+  <div class="phone-sim">
+    <div class="phone-top"><span>오후 3:15</span><span>📶 Wi-Fi</span></div>
+    <div class="phone-body">
+      <div class="phone-label">🔔 알림</div>
+      <div class="notif">
+        <div class="notif-icon" style="background:#fef3c7">🎁</div>
+        <div class="notif-body">
+          <div class="notif-title">축하합니다! 10만원 상품권 당첨!</div>
+          <div class="notif-text">지금 바로 수령하세요! 이름, 전화번호, 주소를 입력하면 배송됩니다.</div>
+        </div>
+      </div>
+      <div class="notif" style="margin-top:.5rem">
+        <div class="notif-icon" style="background:#ede9fe">💎</div>
+        <div class="notif-body">
+          <div class="notif-title">무료 다이아 10,000개 지급!</div>
+          <div class="notif-text">계정 아이디와 비밀번호를 입력하면 즉시 지급됩니다.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="body-text">상품권? 무료 다이아? 마음이 솔깃해진다. 하지만 <strong>세상에 진짜 공짜는 없다</strong>. 이것은 네 개인정보를 빼가기 위한 미끼다. 이름, 전화번호, 주소를 입력하면 그 정보가 사기꾼에게 넘어간다. 게임 아이디와 비밀번호를 입력하면 계정을 통째로 빼앗긴다.</p>
+
+  <div class="pause">
+    <div class="pause-label">🤚 잠깐, 기억해!</div>
+    <strong>"비밀번호를 물어보는 곳은 전부 가짜다."</strong><br>
+    진짜 게임 회사, 진짜 은행, 진짜 어떤 서비스도 비밀번호를 물어보지 않는다. 비밀번호를 입력하라는 곳이 있으면, 그 사이트 자체가 가짜다.
+  </div>
+
+  <p class="body-text">특히 유튜브 댓글이나 카카오톡 오픈채팅에서 <strong>"게임 핵 무료 배포", "아이템 복사 방법"</strong> 같은 글을 볼 수 있는데, 이것들은 100% 바이러스 프로그램이거나 계정 탈취 사기다. 호기심이 생기더라도 절대 다운로드하지 마라.</p>
+
+  <!-- ━━━ CHAPTER 3 ━━━ -->
+  <div class="section-header">
+    <div class="section-number">Chapter 03</div>
+    <h2 class="section-title">도박과 베팅 — 게임처럼 보이는 함정</h2>
+  </div>
+
+  <p class="body-text">요즘은 "게임"처럼 보이지만 실제로는 도박인 앱이나 사이트가 많다. 처음에는 무료로 해볼 수 있게 해주고, 몇 번 이기게 해준다. "와, 나 잘하는데?" 하고 빠져들면 그때부터 진짜 돈을 쓰게 만든다.</p>
+
+  <div class="phone-sim">
+    <div class="phone-top"><span>오후 7:42</span><span>📶 LTE</span></div>
+    <div class="phone-body">
+      <div class="phone-label">💬 카카오톡 메시지</div>
+      <div class="sms scam">
+        <div class="sender">친구 추천 스포츠 예측 ⚽</div>
+        야 이거 진짜 쉽다 ㅋㅋ 축구 경기 결과 맞추면 포인트 주는데 나 벌써 5만원 벌었어. 너도 해봐 → sportzbet.xyz
+      </div>
+    </div>
+  </div>
+
+  <p class="body-text">친구가 보낸 것 같지만, 이것은 <strong>불법 도박 사이트</strong>의 홍보다. 친구 계정이 해킹당해서 자동으로 보내진 것일 수도 있고, 친구도 이미 속아서 보내는 것일 수도 있다.</p>
+
+  <div class="warn">
+    <div class="warn-label">🚨 도박의 진짜 무서운 점</div>
+    처음에 일부러 이기게 해준다. "나는 운이 좋구나, 잘하는구나" 하고 생각하게 만든다. 그리고 점점 더 큰 돈을 걸게 유도한다. 한번 빠지면 "다음에는 딸 수 있어"라는 생각이 머리에서 떠나지 않는다. <strong>이것은 게임이 아니라 중독이다.</strong> 그리고 미성년자 도박은 법으로 금지되어 있다.
+  </div>
+
+  <!-- ━━━ CHAPTER 4 ━━━ -->
+  <div class="section-header">
+    <div class="section-number">Chapter 04</div>
+    <h2 class="section-title">낯선 사람의 친절 — 그루밍</h2>
+  </div>
+
+  <p class="body-text">온라인 게임이나 SNS에서 처음 보는 사람이 아주 친절하게 다가올 때가 있다.</p>
+
+  <div class="phone-sim">
+    <div class="phone-top"><span>오후 9:11</span><span>📶 Wi-Fi</span></div>
+    <div class="phone-body">
+      <div class="phone-label">🎮 게임 채팅</div>
+      <div class="sms" style="background:#e8f0fe;border:1px solid #bfdbfe">
+        <div class="sender">CoolGamer_99</div>
+        와 너 진짜 잘한다! 몇 살이야? 나 아이템 많은데 공짜로 줄까? 카톡 아이디 알려줘 ㅎㅎ
+      </div>
+    </div>
+  </div>
+
+  <p class="body-text">처음에는 칭찬하고, 아이템을 주고, 친구처럼 대한다. 하지만 시간이 지나면 <strong>개인 정보를 물어보고, 사진을 요구하고, "이건 우리끼리만 아는 비밀이야"</strong> 같은 말을 한다. 이것을 <strong>그루밍(Grooming)</strong>이라고 한다. 나쁜 어른이 아이의 신뢰를 얻은 뒤 나쁜 짓을 하려는 것이다.</p>
+
+  <div class="concept">
+    <span class="concept-badge">핵심 원칙</span>
+    <h3>온라인에서 만난 사람의 위험 신호 5가지</h3>
+    <p>
+      <strong>① 나이를 물어본다</strong> — 특히 어른이 아이에게 나이를 묻는 것은 위험 신호.<br><br>
+      <strong>② "비밀로 하자"고 한다</strong> — 건강한 관계에서는 비밀을 강요하지 않는다.<br><br>
+      <strong>③ 개인 연락처를 물어본다</strong> — 게임 안에서만 놀면 되는데, 왜 카톡 아이디를 원할까?<br><br>
+      <strong>④ 사진이나 영상을 요구한다</strong> — 어떤 사진이든, 절대 보내지 마라.<br><br>
+      <strong>⑤ "선물을 줄게" "만나자"고 한다</strong> — 온라인에서 만난 사람을 오프라인에서 만나면 절대 안 된다.
+    </p>
+  </div>
+
+  <div class="safe">
+    <div class="safe-label">💚 이 중 하나라도 해당되면</div>
+    대화를 멈추고, 캡처(스크린샷)를 찍고, <strong>바로 엄마·아빠에게 보여주면 된다.</strong><br>
+    "내가 먼저 말을 걸어서…" "아이템 받았으니까…" 이런 걱정은 하지 않아도 된다. 잘못한 건 그 나쁜 어른이지, 네가 아니다.
+  </div>
+
+  <!-- ━━━ CHAPTER 5: DRUGS ━━━ -->
+  <div class="section-header">
+    <div class="section-number">Chapter 05</div>
+    <h2 class="section-title">달콤한 말로 다가오는 마약</h2>
+  </div>
+
+  <p class="body-text">이건 영화 속 이야기가 아니다. 실제로 학교 주변에서, SNS에서, 심지어 같은 학교 학생을 통해서 마약이 퍼지고 있다. 그리고 처음에는 <strong>마약이라는 말을 절대 쓰지 않는다</strong>.</p>
+
+  <div class="phone-sim">
+    <div class="phone-top"><span>오후 5:30</span><span>📶 Wi-Fi</span></div>
+    <div class="phone-body">
+      <div class="phone-label">💬 SNS 메시지</div>
+      <div class="sms scam">
+        <div class="sender">같은 학교 선배 (자칭)</div>
+        야 이거 시험 전에 먹으면 집중력 확 올라가 ㅋㅋ 비타민 같은 건데 효과 대박임. 나도 먹고 성적 올랐어. 한 번만 먹어봐 공짜로 줄게
+      </div>
+    </div>
+  </div>
+
+  <p class="body-text">"비타민", "영양제", "집중력 올리는 약", "기분 좋아지는 거", "살 빠지는 약", "잠 안 와도 되는 약" — 이런 말로 포장한다. 하지만 이것들은 <strong>각성제, 마약, 향정신성 의약품</strong>일 수 있다. 처음에는 공짜로 주지만, 그다음부터 진짜 목적이 드러난다.</p>
+
+  <div class="warn">
+    <div class="warn-label">🚨 마약 권유의 실제 패턴</div>
+    <strong>1단계 — 접근:</strong> "선배", "형", "언니"라며 친한 척 다가온다. 게임 아이템이나 간식을 사주며 신뢰를 쌓는다.<br><br>
+    <strong>2단계 — 권유:</strong> "한 번만 해봐", "다들 해", "이건 마약 아니야, 걱정 마"라고 말한다. 절대 "마약"이라는 단어를 쓰지 않는다.<br><br>
+    <strong>3단계 — 덫:</strong> 한 번 먹으면 그 증거(사진, 영상, 대화 내역)로 협박한다. "부모님한테 말하면 너도 범죄자야"라고 위협하며 돈을 뜯거나 더 위험한 일을 시킨다.<br><br>
+    <strong>4단계 — 중독과 착취:</strong> 약을 계속 찾게 만들어 의존시키고, 다른 아이들에게 약을 전달하는 "전달책"을 시키거나, 더 심한 범죄에 이용한다.
+  </div>
+
+  <div class="pause">
+    <div class="pause-label">🤚 잠깐, 이게 핵심이다</div>
+    마약을 주는 사람의 목적은 <strong>"너의 건강"이 아니라 "너를 이용하는 것"</strong>이다. 공짜로 주는 이유는 네가 좋아서가 아니라, 한 번 손대면 빠져나올 수 없게 만든 뒤 돈을 뜯거나 범죄에 이용하기 위해서다.
+  </div>
+
+  <div class="concept">
+    <span class="concept-badge">핵심 원칙</span>
+    <h3>이런 말이 들리면 100% 위험하다</h3>
+    <p>
+      <strong>"이건 마약 아니야, 약초(한약/비타민)야"</strong> → 거짓말. 합법적인 약은 약국에서 산다.<br><br>
+      <strong>"한 번만 해봐, 중독 안 돼"</strong> → 거짓말. 한 번으로 중독되는 약이 있다.<br><br>
+      <strong>"다들 하고 있어, 너만 안 해"</strong> → 거짓말. 안 하는 게 정상이다.<br><br>
+      <strong>"비밀로 하자, 어른들은 몰라도 돼"</strong> → 가장 큰 위험 신호. 건강한 관계에서는 비밀을 강요하지 않는다.<br><br>
+      <strong>"네가 한 거 다 알아, 말하면 너도 처벌받아"</strong> → 거짓말. 협박당한 사실을 신고하면 <strong>네가 보호받는다</strong>. 신고한 아이를 처벌하지 않는다.
+    </p>
+  </div>
+
+  <p class="body-text">그리고 마약은 <strong>스마트폰을 통해서도</strong> 접근한다. SNS, 텔레그램, 카카오톡 오픈채팅에서 은어로 마약을 거래하는 사람들이 있다. "아이스", "떨", "캔디", "초콜릿" 같은 평범한 단어가 마약의 은어로 쓰이기도 한다.</p>
+
+  <div class="safe">
+    <div class="safe-label">💚 누군가 수상한 약을 권하면</div>
+    <strong>① 거절한다.</strong> "싫어", "안 해" — 이유를 설명할 필요 없다. 그냥 "안 해"면 된다.<br><br>
+    <strong>② 자리를 떠난다.</strong> 상대가 "왜?", "겁쟁이야?" 하고 놀려도 무시하고 떠나면 된다. 거절하는 게 용기다.<br><br>
+    <strong>③ 바로 말한다.</strong> 부모님, 선생님, 또는 <strong>경찰(112)</strong>에 말한다. 이미 먹어버린 경우에도 바로 말하면 된다. <strong>빨리 말할수록 네가 보호받는다.</strong><br><br>
+    <strong>④ 신고 채널:</strong> 마약 신고 전화 <strong>📞 1301</strong> (마약범죄 신고센터), 학교폭력 신고 <strong>📞 117</strong>
+  </div>
+
+  <!-- ━━━ CHAPTER 6 ━━━ -->
+  <div class="section-header">
+    <div class="section-number">Chapter 06</div>
+    <h2 class="section-title">이미 빠져버렸을 때 — 괜찮아, 말하면 돼</h2>
+  </div>
+
+  <p class="body-text">여기가 이 글에서 <strong>가장 중요한 부분</strong>이다.</p>
+
+  <p class="body-text">만약 이미 링크를 눌러버렸거나, 개인정보를 입력해버렸거나, 이상한 앱을 설치해버렸거나, 모르는 사람과 오랫동안 대화를 해버렸다면 — 이런 생각이 들 수 있다.</p>
+
+  <div class="warn">
+    <div class="warn-label">❌ 이렇게 생각하면 위험하다</div>
+    "엄마한테 말하면 혼날 거야…"<br>
+    "스마트폰 뺏길 수도 있어…"<br>
+    "내가 바보같이 속았다는 걸 알리고 싶지 않아…"<br>
+    "조금만 더 있으면 내가 해결할 수 있을 거야…"
+  </div>
+
+  <p class="body-text">이런 생각은 자연스러운 것이다. 하지만 <strong>사기꾼들이 가장 좋아하는 것</strong>이 바로 이 생각이다. 네가 부끄러워서, 무서워서, 혼날까 봐 아무에게도 말하지 않는 것. 말하지 않으면 문제는 더 커진다. 말하면 문제는 거기서 끝난다.</p>
+
+  <div class="safe">
+    <div class="safe-label">💚 진짜는 이렇다</div>
+    <strong>부모님은 네가 속았다고 화내지 않는다.</strong> 어른도 속는다. 매일 수천 명의 어른이 같은 사기에 속는다. 부모님은 네가 말해줘서 고맙다고 할 것이다. 그리고 같이 해결할 것이다.<br><br>
+    <strong>늦었다고 생각될 때가 가장 빠른 때다.</strong> 1주일 전에 실수한 걸 오늘 말해도 된다. 한 달 전 일이어도 된다. 지금 말하면 된다.
+  </div>
+
+  <div class="action-steps">
+    <div class="action-step">
+      <div class="step-num" style="background:var(--blue)">1</div>
+      <div class="step-text"><strong>멈추기</strong> — 이상하다고 느낀 순간, 더 이상 아무것도 누르지 마. 앱을 닫고 화면을 잠가.</div>
+    </div>
+    <div class="action-step">
+      <div class="step-num" style="background:var(--violet)">2</div>
+      <div class="step-text"><strong>증거 남기기</strong> — 화면을 캡처(스크린샷)해. 나중에 신고할 때 증거가 된다.</div>
+    </div>
+    <div class="action-step">
+      <div class="step-num" style="background:var(--green)">3</div>
+      <div class="step-text"><strong>바로 말하기</strong> — 엄마·아빠에게 보여주고 말하기. "이런 게 왔는데 이상한 것 같아" 이 한마디면 충분해.</div>
+    </div>
+  </div>
+
+  <!-- ━━━ QUIZ ━━━ -->
+  <div class="section-header">
+    <div class="section-number">실전 연습</div>
+    <h2 class="section-title">이건 안전할까, 위험할까?</h2>
+  </div>
+
+  <p class="body-text">실제로 올 수 있는 상황들이다. 각각 <strong>안전</strong>인지 <strong>위험</strong>인지 판단해보자.</p>
+
+  <!-- Scenario 1 -->
+  <div class="judge-card" id="j1">
+    <div class="judge-scenario">
+      <div class="phone-sim" style="margin:0 auto .5rem;box-shadow:none;border:2px solid #e5e5e5">
+        <div class="phone-body" style="min-height:auto;padding:.6rem .8rem">
+          <div class="sms scam" style="max-width:100%">
+            <div class="sender">1588-XXXX</div>
+            [국민건강보험] 건강검진 결과 확인하세요. 본인확인 후 조회 가능 → http://hk-check.me/r3
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="judge-btns">
+      <button class="judge-btn safe-btn" onclick="judge('j1',false)">✅ 안전</button>
+      <button class="judge-btn danger-btn" onclick="judge('j1',true)">🚨 위험</button>
+    </div>
+    <div class="judge-result" id="j1-r"></div>
+  </div>
+
+  <!-- Scenario 2 -->
+  <div class="judge-card" id="j2">
+    <div class="judge-scenario">
+      <div class="phone-sim" style="margin:0 auto .5rem;box-shadow:none;border:2px solid #e5e5e5">
+        <div class="phone-body" style="min-height:auto;padding:.6rem .8rem">
+          <div class="sms real" style="max-width:100%">
+            <div class="sender">엄마 ❤️</div>
+            학원 끝나면 바로 집으로 와~ 오늘 저녁 치킨이야 🍗
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="judge-btns">
+      <button class="judge-btn safe-btn" onclick="judge('j2',true)">✅ 안전</button>
+      <button class="judge-btn danger-btn" onclick="judge('j2',false)">🚨 위험</button>
+    </div>
+    <div class="judge-result" id="j2-r"></div>
+  </div>
+
+  <!-- Scenario 3 -->
+  <div class="judge-card" id="j3">
+    <div class="judge-scenario">
+      <div class="phone-sim" style="margin:0 auto .5rem;box-shadow:none;border:2px solid #e5e5e5">
+        <div class="phone-body" style="min-height:auto;padding:.6rem .8rem">
+          <div class="notif">
+            <div class="notif-icon" style="background:#fef3c7">🏆</div>
+            <div class="notif-body">
+              <div class="notif-title">앱스토어 이벤트 당첨!</div>
+              <div class="notif-text">Apple ID와 비밀번호를 입력하면 App Store 10만원 크레딧을 지급합니다.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="judge-btns">
+      <button class="judge-btn safe-btn" onclick="judge('j3',false)">✅ 안전</button>
+      <button class="judge-btn danger-btn" onclick="judge('j3',true)">🚨 위험</button>
+    </div>
+    <div class="judge-result" id="j3-r"></div>
+  </div>
+
+  <!-- Scenario 4 -->
+  <div class="judge-card" id="j4">
+    <div class="judge-scenario">
+      <div class="phone-sim" style="margin:0 auto .5rem;box-shadow:none;border:2px solid #e5e5e5">
+        <div class="phone-body" style="min-height:auto;padding:.6rem .8rem">
+          <div class="sms scam" style="max-width:100%">
+            <div class="sender">🎮 게임 채팅 - StarKid</div>
+            너 진짜 잘하더라~ 나 중학생인데 같이 팀 할래? 카톡 아이디 알려줘! 보이스톡으로 하면 더 재밌어
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="judge-btns">
+      <button class="judge-btn safe-btn" onclick="judge('j4',false)">✅ 안전</button>
+      <button class="judge-btn danger-btn" onclick="judge('j4',true)">🚨 위험</button>
+    </div>
+    <div class="judge-result" id="j4-r"></div>
+  </div>
+
+  <!-- Scenario 5 -->
+  <div class="judge-card" id="j5">
+    <div class="judge-scenario">
+      <div class="phone-sim" style="margin:0 auto .5rem;box-shadow:none;border:2px solid #e5e5e5">
+        <div class="phone-body" style="min-height:auto;padding:.6rem .8rem">
+          <div class="sms scam" style="max-width:100%">
+            <div class="sender">010-5XXX-XXXX</div>
+            [경찰청] 귀하 명의로 범죄 수사가 접수되었습니다. 오늘 중으로 아래 번호로 연락 바랍니다. 미연락시 체포 영장이 발부됩니다.
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="judge-btns">
+      <button class="judge-btn safe-btn" onclick="judge('j5',false)">✅ 안전</button>
+      <button class="judge-btn danger-btn" onclick="judge('j5',true)">🚨 위험</button>
+    </div>
+    <div class="judge-result" id="j5-r"></div>
+  </div>
+
+  <!-- Scenario 6 -->
+  <div class="judge-card" id="j6">
+    <div class="judge-scenario">
+      <div class="phone-sim" style="margin:0 auto .5rem;box-shadow:none;border:2px solid #e5e5e5">
+        <div class="phone-body" style="min-height:auto;padding:.6rem .8rem">
+          <div class="sms real" style="max-width:100%">
+            <div class="sender">학교 선생님</div>
+            내일 현장학습 준비물 안내입니다. 물통, 돗자리, 간식 준비해오세요. 비가 오면 실내 활동으로 변경됩니다 😊
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="judge-btns">
+      <button class="judge-btn safe-btn" onclick="judge('j6',true)">✅ 안전</button>
+      <button class="judge-btn danger-btn" onclick="judge('j6',false)">🚨 위험</button>
+    </div>
+    <div class="judge-result" id="j6-r"></div>
+  </div>
+
+  <!-- Scenario 7: Drug -->
+  <div class="judge-card" id="j7">
+    <div class="judge-scenario">
+      <div class="phone-sim" style="margin:0 auto .5rem;box-shadow:none;border:2px solid #e5e5e5">
+        <div class="phone-body" style="min-height:auto;padding:.6rem .8rem">
+          <div class="sms scam" style="max-width:100%">
+            <div class="sender">학교 선배 (자칭)</div>
+            야 시험 기간에 이거 먹으면 밤새 공부해도 안 졸려 ㅋㅋ 비타민이야 걱정 마~ 한 알만 먹어봐 공짜로 줄게. 근데 선생님한테는 비밀이야
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="judge-btns">
+      <button class="judge-btn safe-btn" onclick="judge('j7',false)">✅ 안전</button>
+      <button class="judge-btn danger-btn" onclick="judge('j7',true)">🚨 위험</button>
+    </div>
+    <div class="judge-result" id="j7-r"></div>
+  </div>
+
+  <!-- ━━━ CLOSING ━━━ -->
+  <div class="section-header">
+    <div class="section-number">마지막으로</div>
+    <h2 class="section-title">세 가지 약속</h2>
+  </div>
+
+  <div class="concept">
+    <span class="concept-badge">나와의 약속</span>
+    <h3>스마트폰을 안전하게 쓰기 위한 3가지 약속</h3>
+    <p>
+      <strong>① 모르는 사람이 보낸 링크는 누르지 않는다.</strong><br>
+      택배, 당첨, 경찰 — 어떤 내용이든 링크가 있으면 일단 의심한다.<br><br>
+      <strong>② 비밀번호와 개인정보는 어디에도 입력하지 않는다.</strong><br>
+      진짜 서비스는 절대 비밀번호를 물어보지 않는다.<br><br>
+      <strong>③ 이상하면 바로 엄마·아빠에게 말한다.</strong><br>
+      혼나지 않는다. 늦지 않았다. 말하는 순간 해결이 시작된다.
+    </p>
+  </div>
+
+  <p class="body-text" style="text-align:center;font-size:1.1rem;font-weight:700;color:var(--blue-deep);margin-top:2rem;">
+    스마트폰은 도구다. 도구를 잘 쓰면 세상이 넓어지고,<br>
+    함정을 알면 함정에 빠지지 않는다.<br><br>
+    이제 너는 함정을 알아볼 수 있는 사람이 되었다. 🛡️
+  </p>
+
+</article>
+
+<footer class="page-footer">
+  첫 스마트폰 안전 가이드 · 함께 안전하게 🛡️
+</footer>
+
+<script>
+window.addEventListener('scroll',()=>{const h=document.documentElement;document.getElementById('scrollProgress').style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight))*100+'%'});
+
+const judged={};
+const explanations={
+  j1:{danger:true,ok:'맞아! 이것은 스미싱이다. 건강보험공단은 이런 문자를 보내지 않는다. 링크(hk-check.me)도 공식 주소가 아니다. 진짜 건강검진 결과는 공식 앱이나 병원에서 확인한다.',no:'아쉽다! 이것은 스미싱(문자 사기)이다. 모르는 번호 + 링크 + 재촉 = 전형적인 사기 3요소가 전부 들어 있다.'},
+  j2:{danger:false,ok:'맞아! 엄마가 보낸 문자다. 아는 사람이 보낸 일상적인 내용이고, 링크도 없고, 개인정보를 요구하지도 않는다. 치킨 먹으러 집에 가면 된다! 🍗',no:'이건 진짜 엄마의 문자다! 저장된 연락처에서 온 일상적인 내용이고, 링크도 없고, 뭔가를 요구하지도 않는다. 안전하다!'},
+  j3:{danger:true,ok:'맞아! 비밀번호를 입력하라는 것 자체가 100% 사기의 증거다. Apple도 이런 식으로 비밀번호를 물어보지 않는다. 당첨 + 비밀번호 요구 = 완벽한 피싱이다.',no:'아쉽다! "비밀번호를 물어보는 곳은 전부 가짜"라는 원칙을 기억하자. 어떤 회사도 비밀번호를 요구하지 않는다.'},
+  j4:{danger:true,ok:'맞아! 온라인에서 만난 사람이 나이를 물어보고, 개인 연락처를 요구하고, 직접 통화하자고 하는 것은 위험 신호 3개에 해당한다. 게임은 게임 안에서만!',no:'아쉽다! 이것은 그루밍의 전형적인 시작이다. 칭찬 → 개인 연락처 요구 → 직접 통화. 모르는 사람에게 카톡 아이디를 알려주면 안 된다.'},
+  j5:{danger:true,ok:'맞아! 경찰은 문자로 "체포 영장"을 보내지 않는다. "오늘 중으로 연락하라"는 재촉도 전형적인 사기 수법이다. 진짜 수사가 있다면 직접 방문하거나 공식 절차를 밟는다.',no:'아쉽다! 이것은 전형적인 기관 사칭 사기다. 경찰, 검찰, 법원은 절대 문자로 "체포"를 예고하지 않는다. 무시하거나 부모님께 알리면 된다.'},
+  j6:{danger:false,ok:'맞아! 학교 선생님이 보낸 안내 문자다. 링크 없고, 개인정보 요구 없고, 일상적인 학교 안내 내용이다. 물통이랑 돗자리 챙기자! 😊',no:'이건 안전한 문자다! 저장된 선생님 번호, 일상적인 학교 안내, 링크 없음 — 전부 안전 신호다.'},
+  j7:{danger:true,ok:'맞아! 위험 신호가 가득하다. ① "비타민"이라며 정체를 숨기고 ② "공짜로 줄게"로 유인하고 ③ "선생님한테는 비밀"로 입막음한다. 이것은 마약 권유의 전형적인 3단계다. 비타민은 약국에서 사는 것이지, 선배가 몰래 주는 게 아니다.',no:'아쉽다! 이것은 매우 위험한 상황이다. "비타민이라고 포장 + 공짜 + 비밀 유지 강요" — 마약 권유의 전형적인 패턴이다. 합법적인 약이라면 비밀로 할 이유가 없다.'}
+};
+
+function judge(id,isDanger){
+  if(judged[id])return;
+  judged[id]=true;
+  const card=document.getElementById(id);
+  const result=document.getElementById(id+'-r');
+  const info=explanations[id];
+  const correct=isDanger===info.danger;
+
+  card.querySelectorAll('.judge-btn').forEach(b=>b.disabled=true);
+  card.classList.add(isDanger?'answered-danger':'answered-safe');
+
+  result.className='judge-result show '+(correct?'correct':'wrong');
+  result.textContent=(correct?'✅ ':'❌ ')+(correct?info.ok:info.no);
+}
+</script>
+</body>
+</html>
