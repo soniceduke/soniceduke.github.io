@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 10 · 경우의 수 | 가우스 반</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Noto+Serif+KR:wght@400;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#2c2c2c;--ink-light:#555;--ink-faint:#888;--paper:#f8f6f9;--card:#fff;--purple:#7c3aed;--purple-deep:#5b21b6;--purple-soft:#f5f3ff;--purple-glow:#ede9fe;--blue:#2563eb;--blue-soft:#eff6ff;--coral:#dc2626;--coral-soft:#fef2f2;--green:#16a34a;--green-deep:#15803d;--green-soft:#f0fdf4;--gold:#d97706;--gold-soft:#fffbeb;--teal:#0d9488;--teal-soft:#f0fdfa;--border:#e4dde8;--shadow:0 2px 24px rgba(0,0,0,.05);--shadow-lg:0 8px 40px rgba(0,0,0,.08);--radius:16px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--paper);color:var(--ink);-webkit-font-smoothing:antialiased}
+
+.hero{position:relative;min-height:55vh;display:flex;align-items:flex-end;padding:3rem 2rem 2.5rem;overflow:hidden;background:linear-gradient(160deg,#1e1b4b 0%,#3730a3 30%,#5b21b6 60%,#7c3aed 100%)}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 20% 80%,rgba(124,58,237,.25) 0%,transparent 70%),radial-gradient(ellipse 50% 40% at 85% 15%,rgba(37,99,235,.2) 0%,transparent 60%)}
+.hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:80px;background:linear-gradient(to top,var(--paper) 0%,transparent 100%)}
+.hero-content{max-width:720px;margin:0 auto;position:relative;z-index:1;color:#fff;width:100%}
+.hero-meta{font-family:'JetBrains Mono',monospace;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;opacity:.6;margin-bottom:1rem}
+.hero h1{font-family:'Noto Serif KR',serif;font-size:clamp(2rem,6vw,3rem);font-weight:700;line-height:1.3;margin-bottom:.8rem}
+.hero-desc{font-size:1rem;opacity:.8;font-weight:300;line-height:1.7;max-width:530px}
+.hero-chips{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.2rem}
+.hero-chip{background:rgba(255,255,255,.15);backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,.2);border-radius:100px;padding:.3rem .9rem;font-size:.75rem}
+
+.content{max-width:720px;margin:0 auto;padding:2rem 2rem 4rem}
+.reading-info{display:flex;align-items:center;gap:.8rem;padding:1rem 0 2rem;border-bottom:1px solid var(--border);margin-bottom:2.5rem;font-size:.82rem;color:var(--ink-faint)}
+.reading-dot{width:6px;height:6px;background:var(--purple);border-radius:50%}
+
+.story{font-family:'Noto Serif KR',serif;font-size:1.08rem;line-height:2;color:var(--ink);margin-bottom:2rem}
+.story.first-para::first-letter{font-size:3.2em;float:left;line-height:.85;margin:.05em .12em 0 0;color:var(--purple-deep);font-weight:700}
+.body-text{font-size:1rem;line-height:2;color:var(--ink);margin-bottom:1.5rem}
+.body-text strong{color:var(--purple-deep);font-weight:700}
+
+.section-header{margin:3rem 0 1.5rem;padding-top:2rem;border-top:1px solid var(--border)}
+.section-number{font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;color:var(--purple);margin-bottom:.4rem}
+.section-title{font-family:'Noto Serif KR',serif;font-size:1.5rem;font-weight:700;color:var(--ink);line-height:1.4}
+
+.concept{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.8rem;margin:1.8rem 0;box-shadow:var(--shadow);position:relative}
+.concept::before{content:'';position:absolute;top:0;left:24px;width:40px;height:3px;background:var(--purple);border-radius:0 0 2px 2px}
+.concept-badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--purple);background:var(--purple-soft);padding:.2rem .7rem;border-radius:100px;margin-bottom:.8rem}
+.concept h3{font-size:1.1rem;font-weight:700;margin-bottom:.7rem;color:var(--purple-deep)}
+.concept p{font-size:.95rem;line-height:1.9;color:var(--ink-light)}
+
+.pause{background:var(--gold-soft);border-left:4px solid var(--gold);border-radius:0 12px 12px 0;padding:1.3rem 1.5rem;margin:2rem 0;font-size:.95rem;line-height:1.85}
+.pause-label{font-weight:700;color:#92400e;margin-bottom:.3rem;font-size:.88rem}
+.analogy{background:var(--teal-soft);border-left:4px solid var(--teal);border-radius:0 12px 12px 0;padding:1.3rem 1.5rem;margin:1.8rem 0;font-size:.95rem;line-height:1.85}
+.analogy-label{font-weight:700;color:var(--teal);margin-bottom:.3rem;font-size:.88rem}
+.keypoint{background:var(--purple-glow);border:1px solid #c4b5fd;border-radius:var(--radius);padding:1.3rem 1.5rem;margin:1.8rem 0;font-size:.95rem;line-height:1.85}
+.keypoint-label{font-weight:700;color:var(--purple-deep);margin-bottom:.3rem;font-size:.88rem}
+.mathbox{background:var(--blue-soft);border-left:4px solid var(--blue);border-radius:0 12px 12px 0;padding:1.3rem 1.5rem;margin:1.8rem 0;font-size:.95rem;line-height:1.85}
+.mathbox-label{font-weight:700;color:var(--blue);margin-bottom:.3rem;font-size:.88rem}
+
+.funfact{display:flex;gap:1rem;align-items:flex-start;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin:1.8rem 0;box-shadow:var(--shadow)}
+.funfact-icon{width:44px;height:44px;background:var(--coral-soft);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0}
+.funfact-body{flex:1}
+.funfact-title{font-size:.85rem;font-weight:700;color:var(--coral);margin-bottom:.3rem}
+.funfact-text{font-size:.9rem;line-height:1.8;color:var(--ink-light)}
+
+.compare-wrap{margin:1.8rem 0;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);box-shadow:var(--shadow)}
+.compare-table{width:100%;border-collapse:collapse;font-size:.88rem}
+.compare-table th{background:var(--purple-deep);color:#fff;padding:.75rem 1rem;text-align:left;font-weight:500;font-size:.82rem}
+.compare-table td{padding:.7rem 1rem;border-bottom:1px solid #f0edf4;color:var(--ink-light);line-height:1.6}
+.compare-table tr:last-child td{border-bottom:none}
+.compare-table tr:nth-child(even) td{background:#faf9fc}
+.compare-table .hl{background:var(--purple-soft)!important;color:var(--purple-deep);font-weight:600}
+
+/* SVG diagrams */
+.diagram-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin:1.8rem 0;box-shadow:var(--shadow)}
+.diagram-svg{padding:1.2rem;display:flex;justify-content:center;background:#faf8fd}
+.diagram-svg svg{max-width:100%;height:auto}
+.diagram-caption{padding:.7rem 1.2rem;font-size:.82rem;color:var(--ink-faint);border-top:1px solid var(--border);line-height:1.6}
+
+/* Pascal Triangle */
+.pascal-wrap{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin:1.8rem 0;box-shadow:var(--shadow);text-align:center}
+.pascal-row{display:flex;justify-content:center;gap:4px;margin-bottom:4px}
+.pascal-cell{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.82rem;font-weight:600;transition:all .3s}
+.pascal-cell.base{background:var(--purple-soft);color:var(--purple-deep);border:1px solid #c4b5fd}
+.pascal-cell.highlight{background:var(--purple);color:#fff}
+.pascal-label{font-size:.75rem;color:var(--ink-faint);margin-top:.8rem}
+
+.num-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:.8rem;margin:1.5rem 0}
+.num-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.2rem;text-align:center;box-shadow:var(--shadow)}
+.num-big{font-family:'JetBrains Mono',monospace;font-size:1.5rem;font-weight:600;color:var(--purple-deep);line-height:1.2}
+.num-label{font-size:.75rem;color:var(--ink-faint);margin-top:.3rem;line-height:1.4}
+
+.quiz-section{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:2rem;margin:2rem 0;box-shadow:var(--shadow)}
+.quiz-section-title{font-family:'Noto Serif KR',serif;font-size:1.15rem;font-weight:700;margin-bottom:.4rem}
+.quiz-section-sub{font-size:.85rem;color:var(--ink-faint);margin-bottom:1.5rem}
+.quiz-block{margin-bottom:1.8rem}.quiz-block:last-child{margin-bottom:0}
+.quiz-q{font-weight:700;font-size:.95rem;margin-bottom:.8rem;padding-left:2.2rem;position:relative;line-height:1.6}
+.quiz-q::before{content:attr(data-num);position:absolute;left:0;top:0;width:1.6rem;height:1.6rem;background:var(--purple);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:600}
+.quiz-opts{display:flex;flex-direction:column;gap:.45rem;padding-left:2.2rem}
+.quiz-opt{background:var(--paper);border:1.5px solid var(--border);border-radius:10px;padding:.65rem 1rem;cursor:pointer;font-size:.88rem;transition:all .25s;display:flex;align-items:center;gap:.6rem;line-height:1.5}
+.quiz-opt:hover{border-color:var(--purple);background:var(--purple-soft)}
+.quiz-opt .marker{width:20px;height:20px;border:2px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.62rem;font-weight:700;flex-shrink:0;transition:all .25s;font-family:'JetBrains Mono',monospace}
+.quiz-opt.correct{border-color:var(--green);background:var(--green-soft)}.quiz-opt.correct .marker{background:var(--green);color:#fff;border-color:var(--green)}
+.quiz-opt.wrong{border-color:var(--coral);background:var(--coral-soft)}.quiz-opt.wrong .marker{background:var(--coral);color:#fff;border-color:var(--coral)}
+.quiz-explain{margin-top:.6rem;margin-left:2.2rem;padding:.8rem 1rem;border-radius:10px;font-size:.85rem;line-height:1.7;display:none}
+.quiz-explain.show{display:block}.quiz-explain.ok{background:var(--green-soft);color:#166534}.quiz-explain.no{background:var(--coral-soft);color:#991b1b}
+
+.page-footer{max-width:720px;margin:0 auto;padding:2rem;text-align:center;font-size:.75rem;color:var(--ink-faint);border-top:1px solid var(--border)}
+.page-footer a{color:var(--purple);text-decoration:none}
+.scroll-progress{position:fixed;top:0;left:0;width:0%;height:3px;background:linear-gradient(90deg,var(--purple-deep),var(--purple));z-index:100;transition:width .1s}
+@media(max-width:600px){.hero{min-height:45vh;padding:2rem 1.2rem}.content{padding:1.5rem 1.2rem 3rem}.section-title{font-size:1.25rem}.pascal-cell{width:30px;height:30px;font-size:.7rem}.concept,.quiz-section{padding:1.4rem}}
+</style>
+</head>
+<body>
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<header class="hero">
+  <div class="hero-content">
+    <div class="hero-meta">Week 10 · 2026.06.27 · 가우스 반</div>
+    <h1>경우의 수</h1>
+    <p class="hero-desc">4자리 비밀번호를 뚫으려면 최대 10,000번을 시도해야 한다. 이 숫자는 어떻게 나온 걸까? "몇 가지가 가능한가?"를 세는 수학, 경우의 수.</p>
+    <div class="hero-chips">
+      <span class="hero-chip">사전학습 교재</span>
+      <span class="hero-chip">약 20분</span>
+      <span class="hero-chip">조합론 · 확률 · 논리</span>
+    </div>
+  </div>
+</header>
+
+<article class="content">
+  <div class="reading-info"><span class="reading-dot"></span><span>읽는 시간 약 20분</span><span>·</span><span>스크롤하며 읽어주세요</span></div>
+
+  <!-- ━━━ INTRO ━━━ -->
+  <p class="story first-para">스마트폰 비밀번호 4자리. 0000부터 9999까지, 가능한 비밀번호는 총 <strong>10,000개</strong>다. 해커가 1초에 하나씩 시도하면 최대 약 2시간 47분이면 뚫린다. 하지만 비밀번호를 6자리로 바꾸면? 가능한 조합이 <strong>1,000,000개</strong>로 뛴다. 같은 속도로 약 11일이 걸린다.</p>
+
+  <p class="body-text">고작 숫자 2개를 더했을 뿐인데, 경우의 수가 <strong>100배</strong>나 늘어났다. 왜 이런 일이 일어나는 걸까? 오늘 우리는 "몇 가지가 가능한가?"를 세는 수학 — <strong>경우의 수</strong>를 배운다. 이것을 알면 비밀번호의 보안부터 로또 당첨 확률까지, 세상의 숫자가 다르게 보인다.</p>
+
+  <div class="funfact">
+    <div class="funfact-icon">🔐</div>
+    <div class="funfact-body">
+      <div class="funfact-title">진짜 이야기</div>
+      <div class="funfact-text">세계에서 가장 많이 사용되는 비밀번호 1위는 <strong>"123456"</strong>이다. 2위는 "password". 해커가 가장 먼저 시도하는 비밀번호이기도 하다. 경우의 수가 아무리 많아도, 뻔한 비밀번호를 쓰면 의미가 없다!</div>
+    </div>
+  </div>
+
+  <!-- ━━━ CHAPTER 1 ━━━ -->
+  <div class="section-header">
+    <div class="section-number">Chapter 01</div>
+    <h2 class="section-title">곱의 법칙 — 경우의 수의 기본 무기</h2>
+  </div>
+
+  <p class="body-text">아침에 옷을 입는다고 생각하자. 상의가 빨강, 파랑, 노랑 <strong>3벌</strong>이고, 하의가 검정, 흰색 <strong>2벌</strong>이다. 가능한 조합은 몇 가지일까?</p>
+
+  <div class="diagram-card">
+    <div class="diagram-svg">
+      <svg viewBox="0 0 480 200" xmlns="http://www.w3.org/2000/svg" style="max-width:480px">
+        <!-- 상의 -->
+        <text x="40" y="20" font-size="11" fill="#888" font-weight="500" font-family="'Noto Sans KR'">상의</text>
+        <rect x="10" y="30" width="60" height="28" rx="6" fill="#fee2e2" stroke="#fca5a5" stroke-width="1.5"/>
+        <text x="40" y="49" text-anchor="middle" font-size="11" fill="#dc2626" font-weight="600" font-family="'Noto Sans KR'">빨강</text>
+        <rect x="10" y="68" width="60" height="28" rx="6" fill="#dbeafe" stroke="#93c5fd" stroke-width="1.5"/>
+        <text x="40" y="87" text-anchor="middle" font-size="11" fill="#2563eb" font-weight="600" font-family="'Noto Sans KR'">파랑</text>
+        <rect x="10" y="106" width="60" height="28" rx="6" fill="#fef9c3" stroke="#fde047" stroke-width="1.5"/>
+        <text x="40" y="125" text-anchor="middle" font-size="11" fill="#a16207" font-weight="600" font-family="'Noto Sans KR'">노랑</text>
+        <!-- 하의 -->
+        <text x="180" y="20" font-size="11" fill="#888" font-weight="500" font-family="'Noto Sans KR'">하의</text>
+        <!-- 빨강 분기 -->
+        <line x1="70" y1="44" x2="140" y2="36" stroke="#ddd" stroke-width="1.5"/>
+        <line x1="70" y1="44" x2="140" y2="58" stroke="#ddd" stroke-width="1.5"/>
+        <rect x="140" y="24" width="56" height="24" rx="5" fill="#f3f4f6" stroke="#d1d5db" stroke-width="1"/>
+        <text x="168" y="40" text-anchor="middle" font-size="10" fill="#374151" font-family="'Noto Sans KR'">검정</text>
+        <rect x="140" y="52" width="56" height="24" rx="5" fill="#fff" stroke="#d1d5db" stroke-width="1"/>
+        <text x="168" y="68" text-anchor="middle" font-size="10" fill="#374151" font-family="'Noto Sans KR'">흰색</text>
+        <!-- 파랑 분기 -->
+        <line x1="70" y1="82" x2="140" y2="90" stroke="#ddd" stroke-width="1.5"/>
+        <line x1="70" y1="82" x2="140" y2="112" stroke="#ddd" stroke-width="1.5"/>
+        <rect x="140" y="78" width="56" height="24" rx="5" fill="#f3f4f6" stroke="#d1d5db" stroke-width="1"/>
+        <text x="168" y="94" text-anchor="middle" font-size="10" fill="#374151" font-family="'Noto Sans KR'">검정</text>
+        <rect x="140" y="106" width="56" height="24" rx="5" fill="#fff" stroke="#d1d5db" stroke-width="1"/>
+        <text x="168" y="122" text-anchor="middle" font-size="10" fill="#374151" font-family="'Noto Sans KR'">흰색</text>
+        <!-- 노랑 분기 -->
+        <line x1="70" y1="120" x2="140" y2="144" stroke="#ddd" stroke-width="1.5"/>
+        <line x1="70" y1="120" x2="140" y2="166" stroke="#ddd" stroke-width="1.5"/>
+        <rect x="140" y="132" width="56" height="24" rx="5" fill="#f3f4f6" stroke="#d1d5db" stroke-width="1"/>
+        <text x="168" y="148" text-anchor="middle" font-size="10" fill="#374151" font-family="'Noto Sans KR'">검정</text>
+        <rect x="140" y="160" width="56" height="24" rx="5" fill="#fff" stroke="#d1d5db" stroke-width="1"/>
+        <text x="168" y="176" text-anchor="middle" font-size="10" fill="#374151" font-family="'Noto Sans KR'">흰색</text>
+        <!-- 결과 -->
+        <text x="230" y="40" font-size="10" fill="#7c3aed" font-weight="600" font-family="'JetBrains Mono'">→ 빨강+검정</text>
+        <text x="230" y="68" font-size="10" fill="#7c3aed" font-weight="600" font-family="'JetBrains Mono'">→ 빨강+흰색</text>
+        <text x="230" y="94" font-size="10" fill="#7c3aed" font-weight="600" font-family="'JetBrains Mono'">→ 파랑+검정</text>
+        <text x="230" y="122" font-size="10" fill="#7c3aed" font-weight="600" font-family="'JetBrains Mono'">→ 파랑+흰색</text>
+        <text x="230" y="148" font-size="10" fill="#7c3aed" font-weight="600" font-family="'JetBrains Mono'">→ 노랑+검정</text>
+        <text x="230" y="176" font-size="10" fill="#7c3aed" font-weight="600" font-family="'JetBrains Mono'">→ 노랑+흰색</text>
+        <!-- 합계 -->
+        <rect x="370" y="85" width="100" height="36" rx="10" fill="#7c3aed"/>
+        <text x="420" y="108" text-anchor="middle" font-size="13" fill="#fff" font-weight="700" font-family="'JetBrains Mono'">총 6가지</text>
+        <text x="420" y="135" text-anchor="middle" font-size="11" fill="#7c3aed" font-weight="600" font-family="'JetBrains Mono'">3 × 2 = 6</text>
+      </svg>
+    </div>
+    <div class="diagram-caption">수형도(Tree Diagram) — 모든 경우를 나뭇가지처럼 펼쳐서 세는 방법</div>
+  </div>
+
+  <p class="body-text">상의 3가지 각각에 대해 하의 2가지를 입을 수 있으니, <strong>3 × 2 = 6가지</strong>다. 이것이 <strong>곱의 법칙</strong>이다.</p>
+
+  <div class="concept">
+    <span class="concept-badge">핵심 개념</span>
+    <h3>곱의 법칙 (Multiplication Principle)</h3>
+    <p>첫 번째 선택이 a가지, 두 번째 선택이 b가지이면, 전체 경우의 수는 <strong>a × b</strong>이다. 선택이 더 많으면 계속 곱하면 된다: a × b × c × …</p>
+  </div>
+
+  <p class="body-text">이제 비밀번호로 돌아오자. 4자리 비밀번호에서 각 자리는 0~9의 10가지 숫자 중 하나다. 곱의 법칙을 적용하면:</p>
+
+  <div class="mathbox">
+    <div class="mathbox-label">📐 비밀번호 경우의 수 계산</div>
+    4자리: <strong>10 × 10 × 10 × 10 = 10,000가지</strong><br>
+    6자리: <strong>10 × 10 × 10 × 10 × 10 × 10 = 1,000,000가지</strong><br>
+    8자리: <strong>10⁸ = 100,000,000가지</strong> (1억!)<br><br>
+    자릿수가 하나 늘 때마다 경우의 수가 <strong>10배</strong>씩 폭발한다. 이것이 비밀번호를 길게 만들라고 하는 이유다.
+  </div>
+
+  <!-- ━━━ CHAPTER 2 ━━━ -->
+  <div class="section-header">
+    <div class="section-number">Chapter 02</div>
+    <h2 class="section-title">순서가 중요한가? — 순열 vs 조합</h2>
+  </div>
+
+  <p class="body-text">경우의 수를 셀 때 가장 중요한 질문이 있다. <strong>"순서가 중요한가?"</strong></p>
+
+  <p class="body-text">예를 들어 비밀번호 "1234"와 "4321"은 <strong>다른</strong> 비밀번호다. 순서가 중요하다. 하지만 피자 토핑으로 "페퍼로니, 올리브, 버섯"을 고른 것과 "버섯, 올리브, 페퍼로니"를 고른 것은 <strong>같은</strong> 피자다. 순서가 상관없다.</p>
+
+  <div class="compare-wrap">
+    <table class="compare-table">
+      <thead><tr><th style="width:25%">구분</th><th>순열 (Permutation)</th><th>조합 (Combination)</th></tr></thead>
+      <tbody>
+        <tr><td><strong>순서</strong></td><td class="hl">순서가 다르면 다른 것</td><td class="hl">순서 상관없음</td></tr>
+        <tr><td><strong>예시</strong></td><td>비밀번호, 달리기 등수, 자물쇠</td><td>피자 토핑, 팀원 선발, 과일 고르기</td></tr>
+        <tr><td><strong>경우의 수</strong></td><td class="hl">더 많다</td><td class="hl">더 적다</td></tr>
+        <tr><td><strong>기호</strong></td><td>nPr</td><td>nCr</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="analogy">
+    <div class="analogy-label">🎯 쉽게 구분하는 방법</div>
+    "A, B, C를 뽑았다"와 "C, B, A를 뽑았다"가 <strong>다른 결과인가?</strong><br>
+    · 다르다 → <strong>순열</strong> (비밀번호처럼 순서가 의미 있을 때)<br>
+    · 같다 → <strong>조합</strong> (팀원을 뽑는 것처럼 누가 먼저인지 상관없을 때)
+  </div>
+
+  <p class="body-text">구체적으로 보자. A, B, C, D, E 다섯 명 중 반장·부반장을 뽑는 것은 <strong>순열</strong>이다. (A가 반장, B가 부반장) ≠ (B가 반장, A가 부반장)이니까. 경우의 수는 5 × 4 = <strong>20가지</strong>다.</p>
+
+  <p class="body-text">같은 다섯 명 중 청소 당번 2명을 뽑는 것은 <strong>조합</strong>이다. {A, B}를 뽑든 {B, A}를 뽑든 같은 결과니까. 경우의 수는 20 ÷ 2 = <strong>10가지</strong>다. 순열보다 적다.</p>
+
+  <div class="pause">
+    <div class="pause-label">🤚 잠깐, 여기서 생각!</div>
+    왜 순열(20)을 2로 나누면 조합(10)이 될까? 순열에서는 {A,B}와 {B,A}를 별개로 세지만, 조합에서는 같은 것이니까. 2명을 줄 세우는 방법이 2! = 2가지이므로, 그만큼 나누어주는 것이다.
+  </div>
+
+  <!-- ━━━ CHAPTER 3 ━━━ -->
+  <div class="section-header">
+    <div class="section-number">Chapter 03</div>
+    <h2 class="section-title">파스칼의 삼각형 — 숫자 속에 숨은 보물지도</h2>
+  </div>
+
+  <p class="body-text">17세기 프랑스 수학자 블레즈 파스칼은 아래와 같은 숫자 삼각형을 만들었다. 규칙은 아주 간단하다: <strong>바로 위의 두 숫자를 더하면 아래 숫자가 된다.</strong></p>
+
+  <div class="pascal-wrap">
+    <div class="pascal-row"><div class="pascal-cell highlight">1</div></div>
+    <div class="pascal-row"><div class="pascal-cell base">1</div><div class="pascal-cell base">1</div></div>
+    <div class="pascal-row"><div class="pascal-cell base">1</div><div class="pascal-cell highlight">2</div><div class="pascal-cell base">1</div></div>
+    <div class="pascal-row"><div class="pascal-cell base">1</div><div class="pascal-cell base">3</div><div class="pascal-cell base">3</div><div class="pascal-cell base">1</div></div>
+    <div class="pascal-row"><div class="pascal-cell base">1</div><div class="pascal-cell base">4</div><div class="pascal-cell highlight">6</div><div class="pascal-cell base">4</div><div class="pascal-cell base">1</div></div>
+    <div class="pascal-row"><div class="pascal-cell base">1</div><div class="pascal-cell base">5</div><div class="pascal-cell base">10</div><div class="pascal-cell base">10</div><div class="pascal-cell base">5</div><div class="pascal-cell base">1</div></div>
+    <div class="pascal-row"><div class="pascal-cell base">1</div><div class="pascal-cell base">6</div><div class="pascal-cell base">15</div><div class="pascal-cell base">20</div><div class="pascal-cell base">15</div><div class="pascal-cell base">6</div><div class="pascal-cell base">1</div></div>
+    <div class="pascal-label">파스칼의 삼각형 — 위의 두 수를 더하면 아래 수가 된다 (예: 1+1=2, 3+3=6)</div>
+  </div>
+
+  <p class="body-text">그런데 이 삼각형 속에 <strong>조합의 수(nCr)</strong>가 숨어 있다! n번째 줄의 r번째 숫자가 바로 nCr의 값이다.</p>
+
+  <div class="keypoint">
+    <div class="keypoint-label">💡 파스칼 삼각형에서 발견할 수 있는 패턴들</div>
+    <strong>① 좌우 대칭</strong> — 삼각형이 정확히 거울처럼 대칭이다.<br><br>
+    <strong>② 각 줄의 합</strong> — 0줄: 1, 1줄: 2, 2줄: 4, 3줄: 8… → 2의 거듭제곱!<br><br>
+    <strong>③ 대각선에 자연수</strong> — 왼쪽에서 두 번째 대각선을 읽으면 1, 2, 3, 4, 5…<br><br>
+    <strong>④ 피보나치 수</strong> — 대각선으로 비스듬히 더하면 1, 1, 2, 3, 5, 8, 13… 피보나치 수열이 나타난다!
+  </div>
+
+  <div class="funfact">
+    <div class="funfact-icon">🌍</div>
+    <div class="funfact-body">
+      <div class="funfact-title">파스칼보다 400년 먼저</div>
+      <div class="funfact-text">사실 이 삼각형은 파스칼이 처음 발견한 것이 아니다. 중국에서는 <strong>1303년</strong>에 주세걸이라는 수학자가 이미 이 삼각형을 사용했다. 중국에서는 "양휘의 삼각형"이라고 부른다. 같은 수학적 진리를 동서양이 독립적으로 발견한 것이다.</div>
+    </div>
+  </div>
+
+  <!-- ━━━ CHAPTER 4 ━━━ -->
+  <div class="section-header">
+    <div class="section-number">Chapter 04</div>
+    <h2 class="section-title">비둘기집 원리 — 단순하지만 강력한 논리</h2>
+  </div>
+
+  <p class="body-text">비둘기 5마리가 있고, 비둘기집이 4개 있다. 모든 비둘기가 집에 들어가면, <strong>반드시 한 집에는 비둘기가 2마리 이상</strong> 들어간다. 당연한 소리 같지만, 이 "당연한" 원리로 놀라운 것들을 증명할 수 있다.</p>
+
+  <div class="concept">
+    <span class="concept-badge">핵심 개념</span>
+    <h3>비둘기집 원리 (Pigeonhole Principle)</h3>
+    <p>n+1개의 물건을 n개의 상자에 넣으면, <strong>반드시 하나 이상의 상자에 2개 이상</strong>이 들어간다. 예외 없이. 무조건.</p>
+  </div>
+
+  <p class="body-text">이 원리로 재미있는 것들을 증명해보자.</p>
+
+  <p class="body-text"><strong>문제 1:</strong> 서울에 인구가 약 950만 명이다. 사람 머리카락 수는 최대 약 15만 가닥이다. 그렇다면 서울에는 <strong>머리카락 수가 정확히 같은 사람이 반드시 존재</strong>한다. 왜? 15만 개의 "상자"(머리카락 수)에 950만 명의 "비둘기"(사람)를 넣으니까, 같은 상자에 들어가는 사람이 반드시 있다.</p>
+
+  <p class="body-text"><strong>문제 2:</strong> 한 반에 13명이 있으면, <strong>같은 달에 생일인 사람이 반드시 2명 이상</strong> 있다. 달은 12개(상자)인데 사람은 13명(비둘기)이니까!</p>
+
+  <div class="pause">
+    <div class="pause-label">🤚 잠깐, 여기서 생각!</div>
+    "같은 생일"이 아니라 "같은 달 생일"임에 주의하자. 같은 날 생일이 있으려면 어떻게 될까? 1년은 365일이니까, 366명이 있으면 같은 날 생일이 반드시 존재한다. 하지만 확률적으로는 23명만 모여도 같은 생일이 있을 확률이 50%를 넘는다! (이것을 "생일 역설"이라고 한다.)
+  </div>
+
+  <!-- ━━━ CHAPTER 5 ━━━ -->
+  <div class="section-header">
+    <div class="section-number">Chapter 05</div>
+    <h2 class="section-title">조합 폭발 — 왜 컴퓨터도 못 푸는 문제가 있는가?</h2>
+  </div>
+
+  <p class="body-text">경우의 수는 선택지가 조금만 늘어나도 <strong>폭발적으로</strong> 커진다. 이것을 <strong>조합 폭발(Combinatorial Explosion)</strong>이라고 한다.</p>
+
+  <div class="compare-wrap">
+    <table class="compare-table">
+      <thead><tr><th>상황</th><th>경우의 수</th><th>컴퓨터로 걸리는 시간</th></tr></thead>
+      <tbody>
+        <tr><td><strong>4자리 비밀번호 (숫자)</strong></td><td>10,000</td><td class="hl">0.01초</td></tr>
+        <tr><td><strong>8자리 비밀번호 (숫자)</strong></td><td>1억</td><td class="hl">약 1초</td></tr>
+        <tr><td><strong>8자리 (숫자+영문)</strong></td><td>2조 8천억</td><td class="hl">약 8시간</td></tr>
+        <tr><td><strong>체스 한 게임의 경우의 수</strong></td><td>10¹²⁰</td><td class="hl">우주 나이로도 부족</td></tr>
+        <tr><td><strong>바둑 한 게임의 경우의 수</strong></td><td>10¹⁷⁰</td><td class="hl">상상 불가</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="body-text">체스의 경우의 수 10¹²⁰은 <strong>우주에 있는 원자의 수(약 10⁸⁰)</strong>보다 많다. 세상에서 가장 빠른 컴퓨터도 모든 경우를 다 시도해볼 수 없다. 그래서 체스 AI(알파고 같은)는 모든 경우를 세는 대신 <strong>"가장 유망한 경우"만 골라서</strong> 탐색하는 전략을 쓴다.</p>
+
+  <div class="keypoint">
+    <div class="keypoint-label">💡 비밀번호 보안의 핵심</div>
+    결국 비밀번호의 안전성은 <strong>경우의 수</strong>에 달려 있다. 경우의 수를 늘리는 방법은 간단하다:<br><br>
+    · <strong>길이를 늘린다</strong> — 한 자리 추가할 때마다 경우의 수가 수십 배 증가<br>
+    · <strong>종류를 늘린다</strong> — 숫자(10가지)만 쓰면 약하고, 영문+숫자+특수문자(70가지 이상)를 쓰면 강하다<br>
+    · <strong>뻔한 패턴을 피한다</strong> — 123456, 생일, 전화번호는 해커가 가장 먼저 시도한다
+  </div>
+
+  <!-- ━━━ SUMMARY ━━━ -->
+  <div class="section-header">
+    <div class="section-number">정리</div>
+    <h2 class="section-title">핵심 정리</h2>
+  </div>
+
+  <div class="num-grid">
+    <div class="num-card"><div class="num-big">a × b</div><div class="num-label">곱의 법칙<br>경우의 수 기본</div></div>
+    <div class="num-card"><div class="num-big">순서 O</div><div class="num-label">순열<br>(비밀번호, 등수)</div></div>
+    <div class="num-card"><div class="num-big">순서 X</div><div class="num-label">조합<br>(팀원 선발, 토핑)</div></div>
+    <div class="num-card"><div class="num-big">10¹²⁰</div><div class="num-label">체스 한 게임의<br>경우의 수</div></div>
+    <div class="num-card"><div class="num-big">n+1→n</div><div class="num-label">비둘기집 원리<br>반드시 겹친다</div></div>
+    <div class="num-card"><div class="num-big">1303</div><div class="num-label">중국 양휘의<br>삼각형 기록</div></div>
+  </div>
+
+  <!-- ━━━ PREVIEW ━━━ -->
+  <div class="section-header">
+    <div class="section-number">다음 수업 미리보기</div>
+    <h2 class="section-title">수업에서는 무엇을 할까?</h2>
+  </div>
+
+  <div class="concept">
+    <span class="concept-badge">수업 전 생각거리</span>
+    <h3>이것만 생각해오면 된다</h3>
+    <p>
+      ❶ 아이스크림 가게에 10가지 맛이 있다. 2가지를 골라 더블 콘을 만들면 몇 가지 조합이 가능할까? (순서가 중요할까?)<br><br>
+      ❷ 파스칼 삼각형의 8번째 줄을 직접 만들어보자. 어떤 패턴이 보이는가?<br><br>
+      ❸ 우리 반 친구들 중 같은 혈액형(A, B, O, AB)인 사람이 반드시 있을까? 몇 명이면 확실할까?
+    </p>
+  </div>
+
+  <!-- ━━━ QUIZ ━━━ -->
+  <div class="section-header">
+    <div class="section-number">확인 퀴즈</div>
+    <h2 class="section-title">잘 읽었는지 확인해보자</h2>
+  </div>
+
+  <div class="quiz-section">
+    <div class="quiz-section-title">3문제만 풀어보자</div>
+    <div class="quiz-section-sub">답을 클릭하면 바로 정답과 해설을 볼 수 있다.</div>
+
+    <div class="quiz-block" id="q1">
+      <div class="quiz-q" data-num="1">비밀번호를 4자리에서 6자리로 바꾸면 경우의 수는 어떻게 되는가?</div>
+      <div class="quiz-opts">
+        <div class="quiz-opt" onclick="answer('q1',this,false)"><span class="marker">A</span><span>2배 늘어난다</span></div>
+        <div class="quiz-opt" onclick="answer('q1',this,false)"><span class="marker">B</span><span>20배 늘어난다</span></div>
+        <div class="quiz-opt" onclick="answer('q1',this,true)"><span class="marker">C</span><span>100배 늘어난다 (10,000 → 1,000,000)</span></div>
+        <div class="quiz-opt" onclick="answer('q1',this,false)"><span class="marker">D</span><span>변하지 않는다</span></div>
+      </div>
+      <div class="quiz-explain" id="q1-fb"></div>
+    </div>
+
+    <div class="quiz-block" id="q2">
+      <div class="quiz-q" data-num="2">5명 중 청소 당번 2명을 뽑는 것은 순열인가, 조합인가?</div>
+      <div class="quiz-opts">
+        <div class="quiz-opt" onclick="answer('q2',this,false)"><span class="marker">A</span><span>순열 — 누가 먼저 뽑혔는지 중요하니까</span></div>
+        <div class="quiz-opt" onclick="answer('q2',this,true)"><span class="marker">B</span><span>조합 — 뽑힌 2명이 같으면 같은 결과니까</span></div>
+        <div class="quiz-opt" onclick="answer('q2',this,false)"><span class="marker">C</span><span>둘 다 해당된다</span></div>
+        <div class="quiz-opt" onclick="answer('q2',this,false)"><span class="marker">D</span><span>경우의 수로 풀 수 없다</span></div>
+      </div>
+      <div class="quiz-explain" id="q2-fb"></div>
+    </div>
+
+    <div class="quiz-block" id="q3">
+      <div class="quiz-q" data-num="3">한 교실에 학생이 13명 있을 때, 비둘기집 원리로 확실히 말할 수 있는 것은?</div>
+      <div class="quiz-opts">
+        <div class="quiz-opt" onclick="answer('q3',this,false)"><span class="marker">A</span><span>같은 날 생일인 학생이 반드시 있다</span></div>
+        <div class="quiz-opt" onclick="answer('q3',this,true)"><span class="marker">B</span><span>같은 달에 생일인 학생이 반드시 2명 이상 있다</span></div>
+        <div class="quiz-opt" onclick="answer('q3',this,false)"><span class="marker">C</span><span>같은 혈액형인 학생이 반드시 4명 이상 있다</span></div>
+        <div class="quiz-opt" onclick="answer('q3',this,false)"><span class="marker">D</span><span>생일이 모두 다를 수도 있다</span></div>
+      </div>
+      <div class="quiz-explain" id="q3-fb"></div>
+    </div>
+  </div>
+
+</article>
+
+<footer class="page-footer">
+  2026 수·과융합영재원 가우스 반 · Week 10 of 21<br>
+  <a href="./">← 전체 커리큘럼</a> · <a href="week-11.html">다음: 달걀을 지켜라! →</a>
+</footer>
+
+<script>
+window.addEventListener('scroll',()=>{const h=document.documentElement;document.getElementById('scrollProgress').style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight))*100+'%'});
+
+const done={};
+const fb={
+  q1:{ok:'정답! 4자리는 10⁴ = 10,000가지, 6자리는 10⁶ = 1,000,000가지. 100배 차이다. 자릿수를 2개 늘렸을 뿐인데 경우의 수가 100배 폭발한 것이다. 이것이 조합 폭발이다.',no:'아쉽다! 정답은 C번이다. 곱의 법칙에 의해 10×10 = 100배가 늘어난다. 4자리: 10,000 → 6자리: 1,000,000.'},
+  q2:{ok:'정답! 청소 당번은 {A,B}를 뽑든 {B,A}를 뽑든 같은 결과다. 순서가 상관없으므로 조합이다. 경우의 수는 5×4÷2 = 10가지.',no:'아쉽다! 정답은 B번이다. 청소 당번에 "1번 당번, 2번 당번" 같은 순서가 없다. 뽑힌 2명이 같으면 같은 결과이므로 조합이다.'},
+  q3:{ok:'정답! 12개의 달(상자)에 13명(비둘기)을 배치하면, 비둘기집 원리에 의해 반드시 한 달에 2명 이상의 생일이 겹친다. 같은 "날"이 아니라 같은 "달"임에 주의!',no:'아쉽다! 정답은 B번이다. 달은 12개인데 학생은 13명이므로, 비둘기집 원리에 의해 같은 달에 생일인 학생이 반드시 2명 이상 존재한다.'}
+};
+function answer(qid,el,correct){if(done[qid])return;done[qid]=true;const block=document.getElementById(qid);block.querySelectorAll('.quiz-opt').forEach(o=>o.style.pointerEvents='none');const explain=document.getElementById(qid+'-fb');if(correct){el.classList.add('correct');explain.className='quiz-explain show ok';explain.textContent='✅ '+fb[qid].ok}else{el.classList.add('wrong');block.querySelectorAll('.quiz-opt').forEach(o=>{if(o.getAttribute('onclick').includes('true'))o.classList.add('correct')});explain.className='quiz-explain show no';explain.textContent='❌ '+fb[qid].no}}
+</script>
+</body>
+</html>
